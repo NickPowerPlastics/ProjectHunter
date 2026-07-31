@@ -14,7 +14,7 @@
     "next_action": "Follow up with developer",
     "opportunity_score": 84,
     "source": "mock",
-    "date_discovered": "2026-07-31T21:07:25+00:00",
+    "date_discovered": "2026-07-31T21:22:44+00:00",
     "imported": false
   },
   {
@@ -32,7 +32,7 @@
     "next_action": "Schedule site visit",
     "opportunity_score": 79,
     "source": "mock",
-    "date_discovered": "2026-07-31T21:07:25+00:00",
+    "date_discovered": "2026-07-31T21:22:44+00:00",
     "imported": false
   },
   {
@@ -50,7 +50,7 @@
     "next_action": "Prepare proposal",
     "opportunity_score": 73,
     "source": "mock",
-    "date_discovered": "2026-07-31T21:07:25+00:00",
+    "date_discovered": "2026-07-31T21:22:44+00:00",
     "imported": false
   },
   {
@@ -68,7 +68,7 @@
     "next_action": "Confirm scope",
     "opportunity_score": 67,
     "source": "mock",
-    "date_discovered": "2026-07-31T21:07:25+00:00",
+    "date_discovered": "2026-07-31T21:22:44+00:00",
     "imported": false
   },
   {
@@ -86,7 +86,7 @@
     "next_action": "Secure approvals",
     "opportunity_score": 71,
     "source": "mock",
-    "date_discovered": "2026-07-31T21:07:25+00:00",
+    "date_discovered": "2026-07-31T21:22:44+00:00",
     "imported": false
   }
 ]
