@@ -1,0 +1,74 @@
+[
+  {
+    "project_name": "West Valley Data Center",
+    "city": "Phoenix",
+    "state": "Arizona",
+    "developer": "Northstar Digital Group",
+    "market": "Data Centers",
+    "estimated_stage": "Early Planning",
+    "estimated_opportunity_score": 84,
+    "date_discovered": "2026-07-31T20:50:56+00:00",
+    "source": "simulated",
+    "imported": false
+  },
+  {
+    "project_name": "Arizona Digital Campus",
+    "city": "Phoenix",
+    "state": "Arizona",
+    "developer": "Northstar Digital Group",
+    "market": "Data Centers",
+    "estimated_stage": "Early Planning",
+    "estimated_opportunity_score": 84,
+    "date_discovered": "2026-07-31T20:50:56+00:00",
+    "source": "simulated",
+    "imported": false
+  },
+  {
+    "project_name": "Mesa Cloud Expansion",
+    "city": "Mesa",
+    "state": "Arizona",
+    "developer": "Atlas Infrastructure",
+    "market": "Data Centers",
+    "estimated_stage": "Site Control",
+    "estimated_opportunity_score": 79,
+    "date_discovered": "2026-07-31T20:50:56+00:00",
+    "source": "simulated",
+    "imported": false
+  },
+  {
+    "project_name": "Tucson AI Hub",
+    "city": "Tucson",
+    "state": "Arizona",
+    "developer": "Cobalt Build Partners",
+    "market": "Data Centers",
+    "estimated_stage": "Design Development",
+    "estimated_opportunity_score": 73,
+    "date_discovered": "2026-07-31T20:50:56+00:00",
+    "source": "simulated",
+    "imported": false
+  },
+  {
+    "project_name": "Flagstaff Compute Facility",
+    "city": "Flagstaff",
+    "state": "Arizona",
+    "developer": "Summit Power Ventures",
+    "market": "Data Centers",
+    "estimated_stage": "Feasibility",
+    "estimated_opportunity_score": 67,
+    "date_discovered": "2026-07-31T20:50:56+00:00",
+    "source": "simulated",
+    "imported": false
+  },
+  {
+    "project_name": "Scottsdale Edge Campus",
+    "city": "Scottsdale",
+    "state": "Arizona",
+    "developer": "Silverline Development",
+    "market": "Data Centers",
+    "estimated_stage": "Permitting",
+    "estimated_opportunity_score": 71,
+    "date_discovered": "2026-07-31T20:50:56+00:00",
+    "source": "simulated",
+    "imported": false
+  }
+]

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+    <h2>{{ company.name }}</h2>
+    <p><strong>Company Type:</strong> {{ company.type }}</p>
+
+    <h3>Associated Projects</h3>
+    {% for project in company.projects %}
+    <div class="company-project-card">
+        <h4>{{ project.name }}</h4>
+        <p><strong>Market:</strong> {{ project.market }}</p>
+        <p><strong>Status:</strong> {{ project.status }}</p>
+    </div>
+    {% endfor %}
+
+    <h3>Apollo Contacts</h3>
+    <p>Contact information will appear here.</p>
+
+    <h3>HubSpot Activity</h3>
+    <p>Activity history will appear here.</p>
+
+    <h3>Method Quote History</h3>
+    <p>Quote history will appear here.</p>
+
+    <h3>Notes</h3>
+    <p>Notes will appear here.</p>
+</div>
+{% endblock %}

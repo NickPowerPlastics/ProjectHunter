@@ -1,0 +1,41 @@
+[
+  {
+    "id": 1,
+    "name": "Microsoft Goodyear",
+    "state": "Texas",
+    "market": "Data Centers",
+    "business_line": "Duct Bank",
+    "developer": "Microsoft",
+    "general_contractor": "Turner Construction",
+    "electrical_contractor": "Research needed",
+    "status": "Opportunity 1",
+    "next_action": "Identify electrical contractor",
+    "score": 80
+  },
+  {
+    "id": 2,
+    "name": "EdgeCore Mesa",
+    "state": "Arizona",
+    "market": "Data Centers",
+    "business_line": "Duct Bank",
+    "developer": "EdgeCore",
+    "general_contractor": "Corbins",
+    "electrical_contractor": "Corbins",
+    "status": "In Review",
+    "next_action": "Contact preconstruction",
+    "score": 90
+  },
+  {
+    "id": 3,
+    "name": "Prime Avondale",
+    "state": "Arizona",
+    "market": "Data Centers",
+    "business_line": "Duct Bank",
+    "developer": "Prime",
+    "general_contractor": "ARCO/Murray",
+    "electrical_contractor": "Research needed",
+    "status": "Opportunity",
+    "next_action": "Find electrical subcontractor",
+    "score": 70
+  }
+]

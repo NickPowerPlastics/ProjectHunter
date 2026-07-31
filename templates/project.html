@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>{{ project.name }}</h2>
+<div class="card">
+    <span class="score-badge {{ 'score-green' if (project.score if project.score is defined else 0) >= 80 else 'score-orange' if (project.score if project.score is defined else 0) >= 50 else 'score-red' }}">Score: {{ project.score if project.score is defined else 0 }}</span>
+    <p><strong>State:</strong> {{ project.state }}</p>
+    <p><strong>Market:</strong> {{ project.market }}</p>
+    <p><strong>Business Line:</strong> {{ project.business_line }}</p>
+    <p><strong>Developer:</strong> {{ project.developer }}</p>
+    <p><strong>General Contractor:</strong> {{ project.general_contractor }}</p>
+    <p><strong>Electrical Contractor:</strong> {{ project.electrical_contractor }}</p>
+    <p><strong>Status:</strong> {{ project.status }}</p>
+    <p><strong>Next Action:</strong> {{ project.next_action }}</p>
+    <a class="button" href="{{ url_for('home') }}">Back to Dashboard</a>
+    <a class="button" href="{{ url_for('edit_project', project_id=project.id) }}">Edit Project</a>
+    <a class="button" href="{{ url_for('project_research', project_id=project.id) }}">Research</a>
+</div>
+{% endblock %}

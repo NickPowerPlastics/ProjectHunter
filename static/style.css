@@ -1,0 +1,284 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background: #f4f6f8;
+    color: #1f2933;
+}
+
+.app-shell {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 240px;
+    background: #183b56;
+    color: white;
+    padding: 24px 18px;
+    box-sizing: border-box;
+}
+
+.sidebar-header h2 {
+    margin: 0 0 6px 0;
+    font-size: 1.2rem;
+}
+
+.sidebar-header p {
+    margin: 0 0 24px 0;
+    color: #cbd5e1;
+}
+
+.nav-link {
+    display: block;
+    color: white;
+    text-decoration: none;
+    padding: 10px 12px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    background: #1f6feb;
+}
+
+.content-area {
+    flex: 1;
+}
+
+.page-header {
+    background: #183b56;
+    color: white;
+    padding: 22px 32px;
+}
+
+.page-header h1 {
+    margin: 0 0 6px 0;
+}
+
+.page-header p {
+    margin: 0;
+}
+
+main {
+    max-width: 1000px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+.card {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 18px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.company-item {
+    padding: 12px 0;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.company-item:last-child {
+    border-bottom: 0;
+}
+
+.company-project-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+}
+
+.dashboard-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 18px;
+}
+
+.dashboard-header-row h2 {
+    margin: 0;
+}
+
+.search-box {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+.search-box input {
+    flex: 1;
+    padding: 10px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 1rem;
+}
+
+.small-button {
+    padding: 10px 12px;
+    border: 0;
+    border-radius: 6px;
+    background: #1f6feb;
+    color: white;
+    cursor: pointer;
+}
+
+.no-results {
+    text-align: center;
+    padding: 24px 0;
+    color: #64748b;
+    font-weight: 600;
+}
+
+.status {
+    font-weight: bold;
+    color: #c05621;
+}
+
+.score-badge {
+    display: inline-block;
+    margin-bottom: 12px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: white;
+}
+
+.score-green {
+    background: #2f855a;
+}
+
+.score-orange {
+    background: #c05621;
+}
+
+.score-red {
+    background: #c53030;
+}
+
+.button {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 9px 14px;
+    background: #1f6feb;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    border: 0;
+    cursor: pointer;
+}
+
+.secondary-button {
+    background: #64748b;
+    margin-top: 0;
+}
+
+.research-card {
+    padding-top: 8px;
+}
+
+.research-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.research-hint {
+    color: #64748b;
+    font-style: italic;
+    margin-bottom: 16px;
+}
+
+.research-section {
+    border-top: 1px solid #e2e8f0;
+    padding: 14px 0;
+}
+
+.research-section h3 {
+    margin: 0 0 8px 0;
+    font-size: 1rem;
+}
+
+.research-section p {
+    margin: 0;
+    color: #475569;
+}
+
+.project-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.favorite-button {
+    background: transparent;
+    border: 0;
+    color: #cbd5e1;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.favorite-button.active {
+    color: #fbbf24;
+}
+
+.favorites-section {
+    margin-bottom: 16px;
+    background: #fff8e1;
+}
+
+.discover-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: end;
+    margin-bottom: 16px;
+}
+
+.discover-form label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-weight: 600;
+}
+
+.discover-form select,
+.discover-form input {
+    padding: 10px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    min-width: 180px;
+}
+
+.discover-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+}
+
+.discover-table th,
+.discover-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #e2e8f0;
+    text-align: left;
+}
+
+.discover-table th {
+    background: #f8fafc;
+}
+
+.success-message {
+    margin: 12px 0 8px;
+    padding: 10px 12px;
+    background: #e6fffa;
+    color: #0f766e;
+    border-radius: 6px;
+    font-weight: 600;
+}

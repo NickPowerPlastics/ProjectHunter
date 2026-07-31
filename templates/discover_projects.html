@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+    <h2>Discover Projects</h2>
+    <form class="discover-form" method="get" action="{{ url_for('discover_projects_page') }}">
+        <label>
+            <span>Search Region</span>
+            <select name="region">
+                <option value="Arizona"{% if region == 'Arizona' %} selected{% endif %}>Arizona</option>
+                <option value="Texas"{% if region == 'Texas' %} selected{% endif %}>Texas</option>
+                <option value="Nevada"{% if region == 'Nevada' %} selected{% endif %}>Nevada</option>
+                <option value="Utah"{% if region == 'Utah' %} selected{% endif %}>Utah</option>
+                <option value="Colorado"{% if region == 'Colorado' %} selected{% endif %}>Colorado</option>
+                <option value="New Mexico"{% if region == 'New Mexico' %} selected{% endif %}>New Mexico</option>
+            </select>
+        </label>
+        <label>
+            <span>Market</span>
+            <input type="text" name="market" value="{{ market }}">
+        </label>
+        <button class="small-button" type="submit">Search</button>
+    </form>
+
+    <form class="discover-form" method="post" action="{{ url_for('run_discovery') }}">
+        <input type="hidden" name="region" value="{{ region }}">
+        <input type="hidden" name="market" value="{{ market }}">
+        <button class="small-button" type="submit">Run Discovery</button>
+    </form>
+
+    {% if message %}
+    <div class="success-message">{{ message }}</div>
+    {% endif %}
+
+    <table class="discover-table">
+        <thead>
+            <tr>
+                <th>Project</th>
+                <th>State</th>
+                <th>Developer</th>
+                <th>Estimated Stage</th>
+                <th>Estimated Opportunity Score</th>
+                <th>Import</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for project in discover_projects %}
+            <tr>
+                <td>{{ project.project_name }}</td>
+                <td>{{ project.state }}</td>
+                <td>{{ project.developer }}</td>
+                <td>{{ project.estimated_stage }}</td>
+                <td>{{ project.estimated_opportunity_score }}</td>
+                <td>
+                    {% if project.imported %}
+                    <span>Imported</span>
+                    {% else %}
+                    <form method="post" action="{{ url_for('import_discovered_project') }}">
+                        <input type="hidden" name="project_name" value="{{ project.project_name }}">
+                        <input type="hidden" name="region" value="{{ region }}">
+                        <input type="hidden" name="market" value="{{ market }}">
+                        <button class="small-button" type="submit">Import</button>
+                    </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

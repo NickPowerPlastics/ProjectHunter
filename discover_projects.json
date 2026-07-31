@@ -1,0 +1,34 @@
+[
+  {
+    "name": "West Valley Data Center",
+    "state": "Arizona",
+    "developer": "Atlas Development",
+    "estimated_stage": "Early Planning",
+    "estimated_opportunity_score": 84,
+    "market": "Data Centers"
+  },
+  {
+    "name": "Lone Star Compute Campus",
+    "state": "Texas",
+    "developer": "BluePeak Ventures",
+    "estimated_stage": "Design Development",
+    "estimated_opportunity_score": 76,
+    "market": "Data Centers"
+  },
+  {
+    "name": "Mojave Logistics Hub",
+    "state": "Nevada",
+    "developer": "Silverline Group",
+    "estimated_stage": "Site Control",
+    "estimated_opportunity_score": 68,
+    "market": "Data Centers"
+  },
+  {
+    "name": "Red Rock Energy Facility",
+    "state": "Utah",
+    "developer": "Summit Utilities",
+    "estimated_stage": "Feasibility",
+    "estimated_opportunity_score": 62,
+    "market": "Data Centers"
+  }
+]

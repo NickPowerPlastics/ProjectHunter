@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Research: {{ project.name }}</h2>
+<div class="card research-card">
+    <div class="research-actions">
+        <a class="button" href="{{ url_for('project_details', project_id=project.id) }}">Back to Project</a>
+        <button class="button secondary-button" type="button">Run Research</button>
+    </div>
+    <p class="research-hint">Research providers coming soon.</p>
+
+    <div class="research-section">
+        <h3>Project Overview</h3>
+        <p>No research available yet.</p>
+    </div>
+
+    <div class="research-section">
+        <h3>Developer</h3>
+        <p>No research available yet.</p>
+    </div>
+
+    <div class="research-section">
+        <h3>General Contractor</h3>
+        <p>No research available yet.</p>
+    </div>
+
+    <div class="research-section">
+        <h3>Electrical Contractor</h3>
+        <p>No research available yet.</p>
+    </div>
+
+    <div class="research-section">
+        <h3>Civil Contractor</h3>
+        <p>No research available yet.</p>
+    </div>
+
+    <div class="research-section">
+        <h3>Utility Company</h3>
+        <p>No research available yet.</p>
+    </div>
+
+    <div class="research-section">
+        <h3>Project News</h3>
+        <p>No research available yet.</p>
+    </div>
+
+    <div class="research-section">
+        <h3>Permit Information</h3>
+        <p>No research available yet.</p>
+    </div>
+
+    <div class="research-section">
+        <h3>Apollo Contacts</h3>
+        <p>No research available yet.</p>
+    </div>
+
+    <div class="research-section">
+        <h3>HubSpot Activity</h3>
+        <p>No research available yet.</p>
+    </div>
+
+    <div class="research-section">
+        <h3>Method Quote History</h3>
+        <p>No research available yet.</p>
+    </div>
+
+    <div class="research-section">
+        <h3>AI Notes</h3>
+        <p>No research available yet.</p>
+    </div>
+
+    <div class="research-section">
+        <h3>Recommended Next Action</h3>
+        <p>No research available yet.</p>
+    </div>
+</div>
+{% endblock %}
