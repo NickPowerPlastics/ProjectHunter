@@ -1,13 +1,20 @@
 # ProjectHunter
 Sales intelligence platform for identifying, tracking, and winning data center infrastructure projects
 
-## Arizona intelligence release
+## Multi-state intelligence platform
 
-This build adds an actionable Arizona outreach workflow:
+The application reads its complete portfolio from `data/intelligence.json`. States,
+companies, metrics, and search results are derived at runtime, so adding a state or
+project requires only a feed update—no application code changes.
 
 - `/contacts` now shows prioritized electrical-contractor contacts with usable email links.
 - Project research pages load saved contractor intelligence, confidence scores, evidence links, and matching contacts.
-- Intelligence data is stored in `data/arizona_intelligence.json`.
+- The State Explorer groups the full feed into collapsible state portfolios.
+- Mission Control highlights discoveries, high-confidence opportunities, research
+  gaps, and recently updated projects.
+- Company and project workspaces connect roles, contacts, evidence, timelines, and
+  estimated revenue.
+- Global search covers projects, companies, contacts, and states.
 - The original placeholder-only research layout has been replaced with an actionable contractor and contact view.
 
 Run locally:

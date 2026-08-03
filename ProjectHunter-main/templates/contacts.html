@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 <section class="mission-hero compact-hero">
-    <div><p class="eyebrow">ARIZONA OUTREACH WORKSPACE</p><h2>Arizona Outreach Contacts</h2><p>Deduplicated contacts, ranked by priority with bounced addresses suppressed.</p><p class="data-provenance">Source: <strong>{{ source }}</strong> · Last updated <time>{{ last_updated.strftime('%Y-%m-%d %H:%M:%S UTC') }}</time></p></div>
+    <div><p class="eyebrow">MULTI-STATE OUTREACH WORKSPACE</p><h2>Intelligence Contacts</h2><p>Deduplicated contacts, ranked by priority with bounced addresses suppressed.</p><p class="data-provenance">Source: <strong>{{ source }}</strong> · Last updated <time>{{ last_updated.strftime('%Y-%m-%d %H:%M:%S UTC') }}</time></p></div>
     <form method="post" action="{{ url_for('sync_intelligence') }}"><input type="hidden" name="next" value="{{ request.full_path }}"><button class="button" type="submit">Sync Intelligence</button></form>
 </section>
 <form class="contact-filter card" method="get"><label for="company"><strong>Company</strong></label><select id="company" name="company" onchange="this.form.submit()"><option value="">All companies</option>{% for company in companies %}<option value="{{ company }}" {% if selected_company == company %}selected{% endif %}>{{ company }}</option>{% endfor %}</select>{% if selected_company %}<a href="{{ url_for('contacts_page') }}">Clear filter</a>{% endif %}</form>

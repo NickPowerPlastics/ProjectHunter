@@ -100,7 +100,9 @@ ACCOUNT_DATA = [
 ]
 
 
-def build_companies(projects):
+def build_companies(projects=None):
+    if projects is None:
+        return intelligence_store.companies()
     companies = []
     index = {}
 
@@ -213,9 +215,15 @@ def build_opportunity_sections(projects):
 @app.route("/")
 def home():
     intelligence = intelligence_store.snapshot()
+    projects = intelligence["projects"]
     return render_template(
         "index.html",
-        projects=intelligence["projects"],
+        projects=projects,
+        states=intelligence_store.states(),
+        recent_discoveries=sorted(projects, key=lambda item: item.get("last_activity", ""), reverse=True)[:5],
+        high_confidence=sorted(projects, key=lambda item: item.get("confidence", 0), reverse=True)[:5],
+        needs_research=[item for item in projects if item.get("current_stage") == "Needs Research" or not item.get("electrical_contractor")][:5],
+        recently_updated=sorted(projects, key=lambda item: item.get("last_activity", ""), reverse=True)[:5],
         metrics=intelligence_store.metrics(),
         source=intelligence_store.source_label,
         last_updated=intelligence_store.last_updated,
@@ -225,7 +233,7 @@ def home():
 
 @app.route("/projects")
 def projects_page():
-    return render_template("page.html", title="Projects", content="Projects page coming soon.", active_page="projects")
+    return render_template("projects.html", states=intelligence_store.states(), active_page="projects")
 
 
 @app.route("/diagnostics", methods=["GET", "POST"])
@@ -250,7 +258,7 @@ def diagnostics_page():
 
 @app.route("/companies")
 def companies_page():
-    companies = build_companies(load_projects())
+    companies = intelligence_store.companies()
     return render_template("companies.html", companies=companies, active_page="companies")
 
 
@@ -270,7 +278,7 @@ def account_workspace(account_id):
 
 @app.route("/company/<int:company_id>", methods=["GET", "POST"])
 def company_details(company_id):
-    companies = build_companies(load_projects())
+    companies = intelligence_store.companies()
     company = next((item for item in companies if item.get("id") == company_id), None)
 
     if company is None:
@@ -298,8 +306,28 @@ def company_details(company_id):
     )
 
 
+@app.get("/search")
+def global_search():
+    query = request.args.get("q", "").strip()
+    needle = query.casefold()
+    data = intelligence_store.snapshot()
+    companies = intelligence_store.companies()
+    states = intelligence_store.states()
+    contains = lambda value: needle and needle in str(value or "").casefold()
+    results = {
+        "projects": [p for p in data["projects"] if any(contains(p.get(field)) for field in ("name", "state", "developer", "general_contractor", "electrical_contractor", "mechanical_contractor"))],
+        "companies": [c for c in companies if contains(c["name"]) or contains(c["type"])],
+        "contacts": [c for c in data["contacts"] if any(contains(c.get(field)) for field in ("name", "company", "title", "email", "location"))],
+        "states": [s for s in states if contains(s["name"])],
+    }
+    return render_template("search.html", query=query, results=results, active_page="search")
+
+
 def prepare_actionable_opportunities(region):
-    opportunities = build_actionable_opportunities() if region == "Arizona" else []
+    opportunities = [item for item in build_actionable_opportunities() if not region or any(
+        project.get("key") == item.get("key") and project.get("state") == region
+        for project in intelligence_store.snapshot()["projects"]
+    )]
     for opportunity in opportunities:
         for contact in opportunity.get("contacts", []):
             contact["email_url"] = build_contact_email_url(contact)
@@ -518,13 +546,14 @@ def toggle_favorite(project_id):
 
 @app.route("/project/<int:project_id>")
 def project_details(project_id):
-    projects = load_projects()
+    projects = intelligence_store.snapshot()["projects"]
     project = next((item for item in projects if item.get("id") == project_id), None)
 
     if project is None:
         return "Project not found", 404
 
-    company_lookup = build_company_lookup(projects)
+    company_lookup = {(company["name"].lower(), company_type.lower()): company["id"]
+                      for company in intelligence_store.companies() for company_type in company["types"]}
     contractor_candidates = project.get("contractor_candidates") or []
     apollo_setup_message = project.get("apollo_setup_message")
     return render_template(

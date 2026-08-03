@@ -1,0 +1,4 @@
+{% extends "base.html" %}{% block content %}
+<section class="mission-hero compact-hero"><div><p class="eyebrow">PORTFOLIO</p><h2>State Explorer</h2><p>Expand any state to review its complete project pipeline.</p></div></section>
+<section class="card">{% for state in states %}<details class="state-group" open><summary><strong>{{ state.name }}</strong><span>{{ state.projects|length }}</span></summary><div class="state-projects">{% for project in state.projects %}<a href="{{ url_for('project_details',project_id=project.id) }}"><strong>{{ project.name }}</strong><small>{{ project.developer }} · {{ project.current_stage }} · {{ project.confidence }}% confidence</small></a>{% endfor %}</div></details>{% endfor %}</section>
+{% endblock %}

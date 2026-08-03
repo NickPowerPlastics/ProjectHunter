@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Any, Dict, List
 
 BASE_DIR = Path(__file__).resolve().parents[1]
-INTELLIGENCE_PATH = BASE_DIR / "data" / "arizona_intelligence.json"
+INTELLIGENCE_PATH = BASE_DIR / "data" / "intelligence.json"
 
 
 def load_intelligence() -> Dict[str, Any]:
