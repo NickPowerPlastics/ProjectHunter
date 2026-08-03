@@ -5,6 +5,7 @@ from flask import Flask, redirect, render_template, request, url_for
 
 from discovery import DiscoveryEngine
 from integrations.apollo import ApolloCompanyService
+from intelligence_store import intelligence_store
 from repositories.project_repository import calculate_score, load_projects, save_projects
 from research import ResearchEngine
 from research.intelligence import (
@@ -211,14 +212,15 @@ def build_opportunity_sections(projects):
 
 @app.route("/")
 def home():
-    projects = load_projects()
-    favorites = [project for project in projects if project.get("favorite", False)]
-    non_favorites = [project for project in projects if not project.get("favorite", False)]
-    favorites = sorted(favorites, key=lambda project: project.get("score", 0), reverse=True)
-    non_favorites = sorted(non_favorites, key=lambda project: project.get("score", 0), reverse=True)
-    ordered_projects = favorites + non_favorites
-    has_favorites = any(project.get("favorite", False) for project in ordered_projects)
-    return render_template("index.html", projects=ordered_projects, has_favorites=has_favorites, active_page="dashboard")
+    intelligence = intelligence_store.snapshot()
+    return render_template(
+        "index.html",
+        projects=intelligence["projects"],
+        metrics=intelligence_store.metrics(),
+        source=intelligence_store.source_label,
+        last_updated=intelligence_store.last_updated,
+        active_page="dashboard",
+    )
 
 
 @app.route("/projects")
@@ -474,17 +476,26 @@ Thanks,"""
 @app.route("/contacts")
 def contacts_page():
     company = request.args.get("company", "").strip()
-    contacts = get_contacts([company] if company else None)
+    intelligence = intelligence_store.snapshot()
+    contacts = [contact for contact in intelligence["contacts"] if not company or contact.get("company") == company]
     for contact in contacts:
-        contact["email_url"] = build_contact_email_url(contact)
-    companies = sorted({contact.get("company", "") for contact in get_contacts() if contact.get("company")})
+        contact["email_url"] = build_contact_email_url(contact) if contact["ready_to_email"] else None
+    companies = sorted({contact.get("company", "") for contact in intelligence["contacts"] if contact.get("company")})
     return render_template(
         "contacts.html",
         contacts=contacts,
         companies=companies,
         selected_company=company,
+        source=intelligence_store.source_label,
+        last_updated=intelligence_store.last_updated,
         active_page="contacts",
     )
+
+
+@app.post("/intelligence/sync")
+def sync_intelligence():
+    intelligence_store.reload()
+    return redirect(request.form.get("next") or url_for("home"))
 
 
 @app.route("/tasks")
