@@ -1,13 +1,34 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="card">
-    <h2>Companies</h2>
-    {% for company in companies %}
-    <div class="company-item">
-        <h3><a href="{{ url_for('company_details', company_id=company.id) }}">{{ company.name }}</a></h3>
-        <p><strong>Company Type:</strong> {{ company.type }}</p>
-        <p><strong>Number of Active Projects:</strong> {{ company.projects | length }}</p>
+<section class="mission-hero compact-hero">
+    <div>
+        <p class="eyebrow">ACCOUNT INTELLIGENCE</p>
+        <h2>Companies</h2>
+        <p>Every developer, contractor, and supplier connected to current Arizona opportunities.</p>
     </div>
+    <span class="count-pill">{{ companies|length }} companies</span>
+</section>
+
+<div class="company-directory-grid">
+    {% for company in companies %}
+    <article class="company-directory-card">
+        <div class="company-directory-top">
+            <div>
+                <span class="status-pill">{{ company.type }}</span>
+                <h3><a href="{{ url_for('company_details', company_id=company.id) }}">{{ company.name }}</a></h3>
+            </div>
+            <strong class="company-opportunity-count">{{ company.projects|length }}</strong>
+        </div>
+        <p class="muted-label">Active opportunities</p>
+        <div class="company-project-preview">
+            {% for project in company.projects[:3] %}
+            <a href="{{ url_for('project_details', project_id=project.id) }}">{{ project.name }}</a>
+            {% endfor %}
+        </div>
+        <a class="button" href="{{ url_for('company_details', company_id=company.id) }}">Open workspace</a>
+    </article>
+    {% else %}
+    <div class="card"><p>No companies are available yet.</p></div>
     {% endfor %}
 </div>
 {% endblock %}
