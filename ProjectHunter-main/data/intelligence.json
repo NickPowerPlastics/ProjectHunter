@@ -1,0 +1,816 @@
+{
+  "updated_at": "2026-07-31",
+  "projects": {
+    "microsoft goodyear": {
+      "name": "Microsoft Goodyear campus expansion",
+      "display_name": "Microsoft Goodyear campus expansion",
+      "state": "Arizona",
+      "market": "Data Centers",
+      "developer": "Microsoft",
+      "general_contractor": "Unknown",
+      "electrical_contractor": "Specified Electrical Contractors",
+      "mechanical_contractor": "",
+      "current_stage": "Needs Research",
+      "confidence": 55,
+      "evidence": [
+        {
+          "label": "PHX71 BIM project reference",
+          "url": "https://pinnacleinfotech.com/projects/microsoft-phx71-data-center/"
+        }
+      ],
+      "recommended_next_action": "Contact Specified Electrical estimating and ask whether its team is supporting PHX71 or the adjacent expansion.",
+      "timeline": [
+        {
+          "date": "2026-Q3",
+          "event": "Contractor intelligence reviewed"
+        }
+      ],
+      "associated_contacts": [],
+      "estimated_revenue": 125000,
+      "last_activity": "2026-07-31",
+      "contractors": [
+        {
+          "company": "Specified Electrical Contractors",
+          "trade": "Electrical contractor candidate",
+          "status": "Possible",
+          "confidence": 55,
+          "reason": "A third-party BIM portfolio associates Specified Electrical Contractors with Microsoft PHX71. Treat as a lead until independently confirmed.",
+          "evidence": [
+            {
+              "label": "PHX71 BIM project reference",
+              "url": "https://pinnacleinfotech.com/projects/microsoft-phx71-data-center/"
+            }
+          ]
+        }
+      ]
+    },
+    "meta mesa": {
+      "name": "Meta Mesa campus expansion",
+      "display_name": "Meta Mesa campus expansion",
+      "state": "Arizona",
+      "market": "Data Centers",
+      "developer": "Meta",
+      "general_contractor": "DPR Construction",
+      "electrical_contractor": "Rosendin",
+      "mechanical_contractor": "",
+      "current_stage": "Active Construction",
+      "confidence": 98,
+      "evidence": [
+        {
+          "label": "DPR Meta Mesa project",
+          "url": "https://www.dpr.com/projects/facebook-mesa-data-center"
+        },
+        {
+          "label": "Rosendin MAZ Mesa project",
+          "url": "https://www.rosendin.com/projects/maz-mesa-data-center/"
+        }
+      ],
+      "recommended_next_action": "Email Rosendin purchasing, estimating, and data-center project management contacts.",
+      "timeline": [
+        {
+          "date": "2026-Q3",
+          "event": "Contractor intelligence reviewed"
+        }
+      ],
+      "associated_contacts": [],
+      "estimated_revenue": 125000,
+      "last_activity": "2026-07-31",
+      "contractors": [
+        {
+          "company": "Rosendin",
+          "trade": "Electrical contractor",
+          "status": "Confirmed",
+          "confidence": 98,
+          "reason": "DPR identifies the Meta Mesa campus and Rosendin lists the MAZ Mesa data center with DPR as general contractor.",
+          "evidence": [
+            {
+              "label": "DPR Meta Mesa project",
+              "url": "https://www.dpr.com/projects/facebook-mesa-data-center"
+            },
+            {
+              "label": "Rosendin MAZ Mesa project",
+              "url": "https://www.rosendin.com/projects/maz-mesa-data-center/"
+            }
+          ]
+        }
+      ]
+    },
+    "vantage goodyear": {
+      "name": "Vantage Goodyear campus",
+      "display_name": "Vantage Goodyear campus",
+      "state": "Arizona",
+      "market": "Data Centers",
+      "developer": "Vantage Data Centers",
+      "general_contractor": "McCarthy Building Companies",
+      "electrical_contractor": "Rosendin",
+      "mechanical_contractor": "Southland Industries",
+      "current_stage": "Active Construction",
+      "confidence": 99,
+      "evidence": [
+        {
+          "label": "McCarthy Vantage Goodyear",
+          "url": "https://www.mccarthy.com/insights/mccarthy-earns-highest-safety-adosh-distinction-on-construction-of-vantage-data-centers"
+        },
+        {
+          "label": "McCarthy Vantage Goodyear",
+          "url": "https://www.mccarthy.com/insights/mccarthy-earns-highest-safety-adosh-distinction-on-construction-of-vantage-data-centers"
+        }
+      ],
+      "recommended_next_action": "Prioritize Rosendin contacts tied to Arizona data-center work.",
+      "timeline": [
+        {
+          "date": "2026-Q3",
+          "event": "Contractor intelligence reviewed"
+        }
+      ],
+      "associated_contacts": [],
+      "estimated_revenue": 125000,
+      "last_activity": "2026-07-31",
+      "contractors": [
+        {
+          "company": "Rosendin",
+          "trade": "Electrical contractor",
+          "status": "Confirmed",
+          "confidence": 99,
+          "reason": "Vantage and McCarthy identify Rosendin as a key trade partner on the Goodyear campus expansion.",
+          "evidence": [
+            {
+              "label": "McCarthy Vantage Goodyear",
+              "url": "https://www.mccarthy.com/insights/mccarthy-earns-highest-safety-adosh-distinction-on-construction-of-vantage-data-centers"
+            }
+          ]
+        },
+        {
+          "company": "Southland Industries",
+          "trade": "Mechanical contractor",
+          "status": "Confirmed",
+          "confidence": 99,
+          "reason": "Named as a key trade partner on the Vantage Goodyear expansion.",
+          "evidence": [
+            {
+              "label": "McCarthy Vantage Goodyear",
+              "url": "https://www.mccarthy.com/insights/mccarthy-earns-highest-safety-adosh-distinction-on-construction-of-vantage-data-centers"
+            }
+          ]
+        }
+      ]
+    },
+    "compass goodyear": {
+      "name": "Compass Datacenters Goodyear hyperscale campus",
+      "display_name": "Compass Datacenters Goodyear hyperscale campus",
+      "state": "Arizona",
+      "market": "Data Centers",
+      "developer": "Compass Datacenters",
+      "general_contractor": "Sundt Construction",
+      "electrical_contractor": "",
+      "mechanical_contractor": "",
+      "current_stage": "Active Construction",
+      "confidence": 95,
+      "evidence": [
+        {
+          "label": "Sundt Compass project update",
+          "url": "https://www.sundt.com/2024/sundt-team-commissions-over-10000-pieces-of-equipment-at-compass-data-center/"
+        }
+      ],
+      "recommended_next_action": "Find Sundt mission-critical procurement and project contacts; electrical subcontractor remains unconfirmed.",
+      "timeline": [
+        {
+          "date": "2026-Q3",
+          "event": "Contractor intelligence reviewed"
+        }
+      ],
+      "associated_contacts": [],
+      "estimated_revenue": 125000,
+      "last_activity": "2026-07-31",
+      "contractors": [
+        {
+          "company": "Sundt Construction",
+          "trade": "General contractor / integrated mission-critical delivery",
+          "status": "Confirmed",
+          "confidence": 95,
+          "reason": "Sundt publicly reports multiple completed buildings and additional work in the pipeline at Compass Goodyear.",
+          "evidence": [
+            {
+              "label": "Sundt Compass project update",
+              "url": "https://www.sundt.com/2024/sundt-team-commissions-over-10000-pieces-of-equipment-at-compass-data-center/"
+            }
+          ]
+        }
+      ]
+    },
+    "edgecore mesa": {
+      "name": "EdgeCore Mesa campus expansion",
+      "display_name": "EdgeCore Mesa campus expansion",
+      "state": "Arizona",
+      "market": "Data Centers",
+      "developer": "EdgeCore Digital Infrastructure",
+      "general_contractor": "Holder Construction / Albireo Energy (prior phases)",
+      "electrical_contractor": "",
+      "mechanical_contractor": "",
+      "current_stage": "Active Construction",
+      "confidence": 90,
+      "evidence": [
+        {
+          "label": "Kearney EdgeCore Mesa Phase 3/4",
+          "url": "https://www.kearneyaz.com/portfolio/edgecore-mesa-phase-3-4/"
+        }
+      ],
+      "recommended_next_action": "Contact incumbent project teams while separately researching the main electrical package for new phases.",
+      "timeline": [
+        {
+          "date": "2026-Q3",
+          "event": "Contractor intelligence reviewed"
+        }
+      ],
+      "associated_contacts": [],
+      "estimated_revenue": 125000,
+      "last_activity": "2026-07-31",
+      "contractors": [
+        {
+          "company": "Kearney Electric",
+          "trade": "Low voltage, controls, and data communications",
+          "status": "Confirmed for prior phases",
+          "confidence": 90,
+          "reason": "Kearney identifies its EdgeCore Mesa Phase 3/4 work and names Holder Construction / Albireo Energy.",
+          "evidence": [
+            {
+              "label": "Kearney EdgeCore Mesa Phase 3/4",
+              "url": "https://www.kearneyaz.com/portfolio/edgecore-mesa-phase-3-4/"
+            }
+          ]
+        }
+      ]
+    },
+    "aws mesa": {
+      "name": "AWS Mesa expansion",
+      "display_name": "AWS Mesa expansion",
+      "state": "Arizona",
+      "market": "Data Centers",
+      "developer": "Amazon Web Services",
+      "general_contractor": "Holder Construction",
+      "electrical_contractor": "Rosendin",
+      "mechanical_contractor": "Southland Industries",
+      "current_stage": "Active Construction",
+      "confidence": 91,
+      "evidence": [],
+      "recommended_next_action": "Validate contractor awards and identify procurement contacts.",
+      "timeline": [],
+      "associated_contacts": [],
+      "estimated_revenue": 180000,
+      "last_activity": "2026-07-31",
+      "contractors": []
+    },
+    "cyrusone chandler": {
+      "name": "CyrusOne Chandler campus",
+      "display_name": "CyrusOne Chandler campus",
+      "state": "Arizona",
+      "market": "Data Centers",
+      "developer": "CyrusOne",
+      "general_contractor": "DPR Construction",
+      "electrical_contractor": "Rosendin",
+      "mechanical_contractor": "",
+      "current_stage": "Procurement",
+      "confidence": 86,
+      "evidence": [],
+      "recommended_next_action": "Validate contractor awards and identify procurement contacts.",
+      "timeline": [],
+      "associated_contacts": [],
+      "estimated_revenue": 140000,
+      "last_activity": "2026-07-31",
+      "contractors": []
+    },
+    "aligned phoenix": {
+      "name": "Aligned Phoenix campus",
+      "display_name": "Aligned Phoenix campus",
+      "state": "Arizona",
+      "market": "Data Centers",
+      "developer": "Aligned Data Centers",
+      "general_contractor": "DPR Construction",
+      "electrical_contractor": "Corbins",
+      "mechanical_contractor": "",
+      "current_stage": "Active Construction",
+      "confidence": 88,
+      "evidence": [],
+      "recommended_next_action": "Validate contractor awards and identify procurement contacts.",
+      "timeline": [],
+      "associated_contacts": [],
+      "estimated_revenue": 160000,
+      "last_activity": "2026-07-31",
+      "contractors": []
+    },
+    "qts phoenix": {
+      "name": "QTS Phoenix campus",
+      "display_name": "QTS Phoenix campus",
+      "state": "Arizona",
+      "market": "Data Centers",
+      "developer": "QTS Data Centers",
+      "general_contractor": "JE Dunn Construction",
+      "electrical_contractor": "",
+      "mechanical_contractor": "",
+      "current_stage": "Needs Research",
+      "confidence": 52,
+      "evidence": [],
+      "recommended_next_action": "Validate contractor awards and identify procurement contacts.",
+      "timeline": [],
+      "associated_contacts": [],
+      "estimated_revenue": 135000,
+      "last_activity": "2026-07-31",
+      "contractors": []
+    },
+    "stream goodyear": {
+      "name": "Stream Data Centers Goodyear",
+      "display_name": "Stream Data Centers Goodyear",
+      "state": "Arizona",
+      "market": "Data Centers",
+      "developer": "Stream Data Centers",
+      "general_contractor": "Holder Construction",
+      "electrical_contractor": "",
+      "mechanical_contractor": "",
+      "current_stage": "Needs Research",
+      "confidence": 48,
+      "evidence": [],
+      "recommended_next_action": "Validate contractor awards and identify procurement contacts.",
+      "timeline": [],
+      "associated_contacts": [],
+      "estimated_revenue": 120000,
+      "last_activity": "2026-07-31",
+      "contractors": []
+    },
+    "ntl mesa": {
+      "name": "NTT Mesa campus",
+      "display_name": "NTT Mesa campus",
+      "state": "Arizona",
+      "market": "Data Centers",
+      "developer": "NTT Global Data Centers",
+      "general_contractor": "Turner Construction",
+      "electrical_contractor": "Rosendin",
+      "mechanical_contractor": "",
+      "current_stage": "Active Construction",
+      "confidence": 84,
+      "evidence": [],
+      "recommended_next_action": "Validate contractor awards and identify procurement contacts.",
+      "timeline": [],
+      "associated_contacts": [],
+      "estimated_revenue": 150000,
+      "last_activity": "2026-07-31",
+      "contractors": []
+    },
+    "prime avondale": {
+      "name": "Prime Avondale data center",
+      "display_name": "Prime Avondale data center",
+      "state": "Arizona",
+      "market": "Data Centers",
+      "developer": "Prime Data Centers",
+      "general_contractor": "",
+      "electrical_contractor": "",
+      "mechanical_contractor": "",
+      "current_stage": "Early Planning",
+      "confidence": 42,
+      "evidence": [],
+      "recommended_next_action": "Validate contractor awards and identify procurement contacts.",
+      "timeline": [],
+      "associated_contacts": [],
+      "estimated_revenue": 90000,
+      "last_activity": "2026-07-31",
+      "contractors": []
+    },
+    "trammell goodyear": {
+      "name": "Trammell Crow Goodyear campus",
+      "display_name": "Trammell Crow Goodyear campus",
+      "state": "Arizona",
+      "market": "Data Centers",
+      "developer": "Trammell Crow Company",
+      "general_contractor": "",
+      "electrical_contractor": "",
+      "mechanical_contractor": "",
+      "current_stage": "Needs Research",
+      "confidence": 35,
+      "evidence": [],
+      "recommended_next_action": "Validate contractor awards and identify procurement contacts.",
+      "timeline": [],
+      "associated_contacts": [],
+      "estimated_revenue": 80000,
+      "last_activity": "2026-07-31",
+      "contractors": []
+    },
+    "edged mesa": {
+      "name": "Edged Energy Mesa campus",
+      "display_name": "Edged Energy Mesa campus",
+      "state": "Arizona",
+      "market": "Data Centers",
+      "developer": "Edged Energy",
+      "general_contractor": "Clayco",
+      "electrical_contractor": "",
+      "mechanical_contractor": "",
+      "current_stage": "Procurement",
+      "confidence": 66,
+      "evidence": [],
+      "recommended_next_action": "Validate contractor awards and identify procurement contacts.",
+      "timeline": [],
+      "associated_contacts": [],
+      "estimated_revenue": 110000,
+      "last_activity": "2026-07-31",
+      "contractors": []
+    },
+    "novva mesa": {
+      "name": "Novva Mesa data center",
+      "display_name": "Novva Mesa data center",
+      "state": "Arizona",
+      "market": "Data Centers",
+      "developer": "Novva Data Centers",
+      "general_contractor": "HITT Contracting",
+      "electrical_contractor": "",
+      "mechanical_contractor": "",
+      "current_stage": "Needs Research",
+      "confidence": 58,
+      "evidence": [],
+      "recommended_next_action": "Validate contractor awards and identify procurement contacts.",
+      "timeline": [],
+      "associated_contacts": [],
+      "estimated_revenue": 105000,
+      "last_activity": "2026-07-31",
+      "contractors": []
+    },
+    "switch texas": {
+      "name": "Switch The Rock campus",
+      "display_name": "Switch The Rock campus",
+      "state": "Texas",
+      "market": "Data Centers",
+      "developer": "Switch",
+      "general_contractor": "DPR Construction",
+      "electrical_contractor": "Rosendin",
+      "mechanical_contractor": "",
+      "current_stage": "Active Construction",
+      "confidence": 90,
+      "evidence": [],
+      "recommended_next_action": "Validate contractor awards and identify procurement contacts.",
+      "timeline": [],
+      "associated_contacts": [],
+      "estimated_revenue": 175000,
+      "last_activity": "2026-07-31",
+      "contractors": []
+    },
+    "qts irving": {
+      "name": "QTS Irving campus",
+      "display_name": "QTS Irving campus",
+      "state": "Texas",
+      "market": "Data Centers",
+      "developer": "QTS Data Centers",
+      "general_contractor": "Turner Construction",
+      "electrical_contractor": "",
+      "mechanical_contractor": "",
+      "current_stage": "Needs Research",
+      "confidence": 57,
+      "evidence": [],
+      "recommended_next_action": "Validate contractor awards and identify procurement contacts.",
+      "timeline": [],
+      "associated_contacts": [],
+      "estimated_revenue": 125000,
+      "last_activity": "2026-07-31",
+      "contractors": []
+    },
+    "meta temple": {
+      "name": "Meta Temple data center",
+      "display_name": "Meta Temple data center",
+      "state": "Texas",
+      "market": "Data Centers",
+      "developer": "Meta",
+      "general_contractor": "DPR Construction",
+      "electrical_contractor": "Rosendin",
+      "mechanical_contractor": "Southland Industries",
+      "current_stage": "Active Construction",
+      "confidence": 94,
+      "evidence": [],
+      "recommended_next_action": "Validate contractor awards and identify procurement contacts.",
+      "timeline": [],
+      "associated_contacts": [],
+      "estimated_revenue": 190000,
+      "last_activity": "2026-07-31",
+      "contractors": []
+    },
+    "compass red oak": {
+      "name": "Compass Red Oak campus",
+      "display_name": "Compass Red Oak campus",
+      "state": "Texas",
+      "market": "Data Centers",
+      "developer": "Compass Datacenters",
+      "general_contractor": "Holder Construction",
+      "electrical_contractor": "",
+      "mechanical_contractor": "",
+      "current_stage": "Procurement",
+      "confidence": 62,
+      "evidence": [],
+      "recommended_next_action": "Validate contractor awards and identify procurement contacts.",
+      "timeline": [],
+      "associated_contacts": [],
+      "estimated_revenue": 130000,
+      "last_activity": "2026-07-31",
+      "contractors": []
+    },
+    "aws loudoun": {
+      "name": "AWS Loudoun County expansion",
+      "display_name": "AWS Loudoun County expansion",
+      "state": "Virginia",
+      "market": "Data Centers",
+      "developer": "Amazon Web Services",
+      "general_contractor": "Holder Construction",
+      "electrical_contractor": "Rosendin",
+      "mechanical_contractor": "",
+      "current_stage": "Active Construction",
+      "confidence": 92,
+      "evidence": [],
+      "recommended_next_action": "Validate contractor awards and identify procurement contacts.",
+      "timeline": [],
+      "associated_contacts": [],
+      "estimated_revenue": 200000,
+      "last_activity": "2026-07-31",
+      "contractors": []
+    },
+    "meta louisville": {
+      "name": "Meta Louisville data center",
+      "display_name": "Meta Louisville data center",
+      "state": "Kentucky",
+      "market": "Data Centers",
+      "developer": "Meta",
+      "general_contractor": "Turner Construction",
+      "electrical_contractor": "",
+      "mechanical_contractor": "",
+      "current_stage": "Needs Research",
+      "confidence": 55,
+      "evidence": [],
+      "recommended_next_action": "Validate contractor awards and identify procurement contacts.",
+      "timeline": [],
+      "associated_contacts": [],
+      "estimated_revenue": 145000,
+      "last_activity": "2026-07-31",
+      "contractors": []
+    },
+    "meta rosemount": {
+      "name": "Meta Rosemount data center",
+      "display_name": "Meta Rosemount data center",
+      "state": "Minnesota",
+      "market": "Data Centers",
+      "developer": "Meta",
+      "general_contractor": "DPR Construction",
+      "electrical_contractor": "",
+      "mechanical_contractor": "",
+      "current_stage": "Early Planning",
+      "confidence": 50,
+      "evidence": [],
+      "recommended_next_action": "Validate contractor awards and identify procurement contacts.",
+      "timeline": [],
+      "associated_contacts": [],
+      "estimated_revenue": 140000,
+      "last_activity": "2026-07-31",
+      "contractors": []
+    },
+    "qts kings mountain": {
+      "name": "QTS Kings Mountain campus",
+      "display_name": "QTS Kings Mountain campus",
+      "state": "North Carolina",
+      "market": "Data Centers",
+      "developer": "QTS Data Centers",
+      "general_contractor": "JE Dunn Construction",
+      "electrical_contractor": "",
+      "mechanical_contractor": "",
+      "current_stage": "Needs Research",
+      "confidence": 48,
+      "evidence": [],
+      "recommended_next_action": "Validate contractor awards and identify procurement contacts.",
+      "timeline": [],
+      "associated_contacts": [],
+      "estimated_revenue": 115000,
+      "last_activity": "2026-07-31",
+      "contractors": []
+    },
+    "qts east windsor": {
+      "name": "QTS East Windsor campus",
+      "display_name": "QTS East Windsor campus",
+      "state": "New Jersey",
+      "market": "Data Centers",
+      "developer": "QTS Data Centers",
+      "general_contractor": "Turner Construction",
+      "electrical_contractor": "",
+      "mechanical_contractor": "",
+      "current_stage": "Procurement",
+      "confidence": 61,
+      "evidence": [],
+      "recommended_next_action": "Validate contractor awards and identify procurement contacts.",
+      "timeline": [],
+      "associated_contacts": [],
+      "estimated_revenue": 120000,
+      "last_activity": "2026-07-31",
+      "contractors": []
+    },
+    "aws new albany": {
+      "name": "AWS New Albany campus",
+      "display_name": "AWS New Albany campus",
+      "state": "Ohio",
+      "market": "Data Centers",
+      "developer": "Amazon Web Services",
+      "general_contractor": "Holder Construction",
+      "electrical_contractor": "Rosendin",
+      "mechanical_contractor": "",
+      "current_stage": "Active Construction",
+      "confidence": 89,
+      "evidence": [],
+      "recommended_next_action": "Validate contractor awards and identify procurement contacts.",
+      "timeline": [],
+      "associated_contacts": [],
+      "estimated_revenue": 185000,
+      "last_activity": "2026-07-31",
+      "contractors": []
+    }
+  },
+  "contacts": [
+    {
+      "name": "Charlie Johnson",
+      "company": "Corbins",
+      "title": "Preconstruction Manager",
+      "email": "c.johnson@corbins.us",
+      "email_status": "Verified",
+      "location": "Arizona",
+      "priority": 100
+    },
+    {
+      "name": "Jody Adams",
+      "company": "Corbins",
+      "title": "Purchasing Manager",
+      "email": "j.adams@corbins.us",
+      "email_status": "Verified",
+      "location": "Arizona",
+      "priority": 99
+    },
+    {
+      "name": "John Larrabee",
+      "company": "Corbins",
+      "title": "VP, Project Development",
+      "email": "john.larrabee@corbins.us",
+      "email_status": "Verified",
+      "location": "Arizona",
+      "priority": 94
+    },
+    {
+      "name": "Chris Leatherberry",
+      "company": "Corbins",
+      "title": "Project Executive",
+      "email": "c.leatherberry@corbins.us",
+      "email_status": "Verified",
+      "location": "Arizona",
+      "priority": 90
+    },
+    {
+      "name": "Sean Reilly",
+      "company": "Corbins",
+      "title": "Project Executive",
+      "email": "s.reilly@corbins.us",
+      "email_status": "Verified",
+      "location": "Arizona",
+      "priority": 90
+    },
+    {
+      "name": "Garth Mathews",
+      "company": "Corbins",
+      "title": "Electrical Project Manager",
+      "email": "g.mathews@corbins.us",
+      "email_status": "Verified",
+      "location": "Arizona",
+      "priority": 85
+    },
+    {
+      "name": "Matt Palella",
+      "company": "Corbins",
+      "title": "Electrical Project Manager",
+      "email": "m.palella@corbins.us",
+      "email_status": "Verified",
+      "location": "Arizona",
+      "priority": 84
+    },
+    {
+      "name": "Clayton Tarin",
+      "company": "Corbins",
+      "title": "Project Manager",
+      "email": "c.tarin@corbins.us",
+      "email_status": "Verified",
+      "location": "Arizona",
+      "priority": 78
+    },
+    {
+      "name": "Devin Gould",
+      "company": "Corbins",
+      "title": "Project Manager",
+      "email": "d.gould@corbins.us",
+      "email_status": "Verified",
+      "location": "Arizona",
+      "priority": 77
+    },
+    {
+      "name": "Bryce Godard",
+      "company": "Cannon & Wendt",
+      "title": "VP, Preconstruction & Design",
+      "email": "bgodard@cannon-wendt.com",
+      "email_status": "Verified",
+      "location": "Phoenix, Arizona",
+      "priority": 98
+    },
+    {
+      "name": "Winston Fagan",
+      "company": "Cannon & Wendt",
+      "title": "Project Manager - Technologies",
+      "email": "wfagan@cannon-wendt.com",
+      "email_status": "Verified",
+      "location": "Phoenix, Arizona",
+      "priority": 88
+    },
+    {
+      "name": "Adam Bevier",
+      "company": "Cannon & Wendt",
+      "title": "Project Manager",
+      "email": "abevier@cannon-wendt.com",
+      "email_status": "Verified",
+      "location": "Phoenix, Arizona",
+      "priority": 80
+    },
+    {
+      "name": "Rick Measles",
+      "company": "Helix Electric",
+      "title": "Operations Manager",
+      "email": "r.measles@helixelectric.com",
+      "email_status": "Verified",
+      "location": "Arizona",
+      "priority": 95
+    },
+    {
+      "name": "Brynn Trunkey",
+      "company": "Helix Electric",
+      "title": "Project Manager",
+      "email": "b.trunkey@helixelectric.com",
+      "email_status": "Verified",
+      "location": "Arizona",
+      "priority": 82
+    },
+    {
+      "name": "Lisa Jones",
+      "company": "Helix Electric",
+      "title": "Senior Project Coordinator",
+      "email": "l.jones@helixelectric.com",
+      "email_status": "Verified",
+      "location": "Arizona",
+      "priority": 72
+    },
+    {
+      "name": "Aaron Burlison",
+      "company": "Rosendin",
+      "title": "Division Senior Project Manager, Data Center",
+      "email": "aburlison@rosendin.com",
+      "email_status": "HubSpot",
+      "location": "United States",
+      "priority": 97
+    },
+    {
+      "name": "Jeremy Kawamura",
+      "company": "Rosendin",
+      "title": "Purchasing Agent",
+      "email": "jkawamura@rosendin.com",
+      "email_status": "HubSpot",
+      "location": "United States",
+      "priority": 96
+    },
+    {
+      "name": "Brandy Smith",
+      "company": "Rosendin",
+      "title": "Purchasing Agent",
+      "email": "bmsmith@rosendin.com",
+      "email_status": "HubSpot",
+      "location": "United States",
+      "priority": 95
+    },
+    {
+      "name": "Matthew Jacobs",
+      "company": "Rosendin",
+      "title": "Buyer/Expeditor",
+      "email": "mjacobs@rosendin.com",
+      "email_status": "HubSpot",
+      "location": "United States",
+      "priority": 93
+    },
+    {
+      "name": "Dan Ruffoni",
+      "company": "Rosendin",
+      "title": "Senior Project Manager",
+      "email": "druffoni@rosendin.com",
+      "email_status": "HubSpot",
+      "location": "United States",
+      "priority": 89
+    },
+    {
+      "name": "Hans Rindfleisch",
+      "company": "Rosendin",
+      "title": "Project Manager",
+      "email": "hrindfleisch@rosendin.com",
+      "email_status": "HubSpot",
+      "location": "United States",
+      "priority": 82
+    }
+  ]
+}

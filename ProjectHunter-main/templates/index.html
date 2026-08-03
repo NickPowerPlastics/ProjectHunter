@@ -1,52 +1,19 @@
 {% extends "base.html" %}
 {% block content %}
 <section class="mission-hero">
-    <div>
-        <p class="eyebrow">ARIZONA SALES INTELLIGENCE</p>
-        <h2>Mission Control</h2>
-        <p>Live project, contractor, and outreach intelligence for the Arizona market.</p>
-        <p class="data-provenance">Source: <strong>{{ source }}</strong> · Last updated <time>{{ last_updated.strftime('%Y-%m-%d %H:%M:%S UTC') }}</time></p>
-    </div>
-    <form method="post" action="{{ url_for('sync_intelligence') }}">
-        <input type="hidden" name="next" value="{{ url_for('home') }}">
-        <button class="button" type="submit">Sync Intelligence</button>
-    </form>
+  <div><p class="eyebrow">MULTI-STATE SALES INTELLIGENCE</p><h2>Mission Control</h2><p>One live view of project, company, contractor, and outreach intelligence.</p><p class="data-provenance">Source: <strong>{{ source }}</strong> · Synced <time>{{ last_updated.strftime('%Y-%m-%d %H:%M:%S UTC') }}</time></p></div>
+  <form method="post" action="{{ url_for('sync_intelligence') }}"><input type="hidden" name="next" value="{{ url_for('home') }}"><button class="button" type="submit">Sync Intelligence</button></form>
 </section>
-
 <section class="metric-grid intelligence-metrics" aria-label="Mission Control metrics">
-    {% for label, value, detail in [
-        ('Total projects', metrics.total_projects, 'Arizona opportunities'),
-        ('Confirmed contractors', metrics.confirmed_contractors, 'Evidence-backed candidates'),
-        ('Needs contractor research', metrics.projects_needing_research, 'Electrical award unresolved'),
-        ('Total contacts', metrics.total_contacts, 'Unique email addresses'),
-        ('Verified contacts', metrics.verified_contacts, 'Verified email status'),
-        ('Bounced contacts', metrics.bounced_contacts, 'Suppressed from email'),
-        ('High-priority contacts', metrics.high_priority_contacts, 'Priority 90 or higher')
-    ] %}
-    <article class="metric-card"><span class="metric-label">{{ label }}</span><strong>{{ value }}</strong><span>{{ detail }}</span></article>
-    {% endfor %}
+{% for label, value in [('Projects',metrics.projects),('Companies',metrics.companies),('Contacts',metrics.contacts),('States',metrics.states),('Confirmed Contractors',metrics.confirmed_contractors),('Needs Research',metrics.needs_research),('Emails Sent',metrics.emails_sent),('Opportunities',metrics.opportunities),('Estimated Pipeline','$' ~ '{:,.0f}'.format(metrics.estimated_pipeline))] %}
+<article class="metric-card"><span class="metric-label">{{ label }}</span><strong>{{ value }}</strong></article>{% endfor %}
 </section>
-
-<section class="card project-browser">
-    <div class="dashboard-header-row"><div><h3>Today's Opportunities</h3><p class="section-subtitle">Project records and contractor evidence from the intelligence feed.</p></div><a href="{{ url_for('contacts_page') }}">View prioritized contacts →</a></div>
-    <div class="intelligence-project-grid">
-    {% for project in projects %}
-        <article class="intelligence-project-card">
-            <p class="eyebrow">{{ project.developer }}</p>
-            <h3>{{ project.display_name }}</h3>
-            <dl class="record-fields"><dt>Developer</dt><dd>{{ project.developer }}</dd><dt>General contractor</dt><dd>{{ project.general_contractor }}</dd></dl>
-            <h4>Contractor candidates</h4>
-            {% for contractor in project.contractors %}
-            <div class="candidate-record">
-                <div><strong>{{ contractor.company }}</strong><span class="status-pill status-{{ contractor.status|lower|replace(' ', '-') }}">{{ contractor.status }}</span></div>
-                <p>{{ contractor.trade }} · <strong>{{ contractor.confidence }}% confidence</strong></p>
-                <p>{{ contractor.reason }}</p>
-                <div class="evidence-links">{% for evidence in contractor.evidence %}<a href="{{ evidence.url }}" target="_blank" rel="noopener">{{ evidence.label }} ↗</a>{% endfor %}</div>
-            </div>
-            {% endfor %}
-            <p class="next-action"><strong>Next action:</strong> {{ project.next_action }}</p>
-        </article>
-    {% endfor %}
-    </div>
+<section class="dashboard-panels">
+{% for title, items, detail in [('Recent discoveries',recent_discoveries,'New intelligence entering the pipeline'),('Highest confidence opportunities',high_confidence,'Evidence-backed project teams'),('Projects needing research',needs_research,'Missing contractor intelligence'),('Recently updated projects',recently_updated,'Latest feed activity')] %}
+<article class="card insight-panel"><h3>{{ title }}</h3><p class="section-subtitle">{{ detail }}</p>{% for project in items %}<a class="insight-row" href="{{ url_for('project_details', project_id=project.id) }}"><span><strong>{{ project.name }}</strong><small>{{ project.state }} · {{ project.current_stage }}</small></span><b>{{ project.confidence }}%</b></a>{% else %}<p>No matching projects.</p>{% endfor %}</article>
+{% endfor %}
+</section>
+<section class="card project-browser"><div class="dashboard-header-row"><div><h3>State Explorer</h3><p class="section-subtitle">All projects grouped automatically from the intelligence feed.</p></div><a href="{{ url_for('projects_page') }}">Explore all projects →</a></div>
+{% for state in states %}<details class="state-group" {% if loop.first %}open{% endif %}><summary><strong>{{ state.name }}</strong><span>{{ state.projects|length }}</span></summary><div class="state-projects">{% for project in state.projects %}<a href="{{ url_for('project_details', project_id=project.id) }}"><strong>{{ project.name }}</strong><small>{{ project.developer }} · {{ project.current_stage }}</small></a>{% endfor %}</div></details>{% endfor %}
 </section>
 {% endblock %}

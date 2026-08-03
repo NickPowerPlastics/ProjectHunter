@@ -28,6 +28,10 @@
         <div class="content-area">
             <header class="topbar">
                 <div><h1>Project Hunter</h1><p>Find the project. Reach the right people. Win the work.</p></div>
+                <form class="global-search" action="{{ url_for('global_search') }}" method="get" role="search">
+                    <label class="sr-only" for="global-search">Search projects, companies, contacts, and states</label>
+                    <input id="global-search" name="q" value="{{ request.args.get('q', '') }}" placeholder="Search all intelligence…" autocomplete="off">
+                </form>
                 <span class="workspace-badge">Power Plastics</span>
             </header>
             <main>{% block content %}{% endblock %}</main>

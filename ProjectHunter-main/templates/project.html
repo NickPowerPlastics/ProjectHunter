@@ -1,50 +1,7 @@
-{% extends "base.html" %}
-{% block content %}
-<h2>{{ project.name }}</h2>
-<div class="card">
-    <span class="score-badge {{ 'score-green' if (project.score if project.score is defined else 0) >= 80 else 'score-orange' if (project.score if project.score is defined else 0) >= 50 else 'score-red' }}">Score: {{ project.score if project.score is defined else 0 }}</span>
-    <p><strong>State:</strong> {{ project.state }}</p>
-    <p><strong>Market:</strong> {{ project.market }}</p>
-    <p><strong>Business Line:</strong> {{ project.business_line }}</p>
-    <p><strong>Developer:</strong> {% if project.developer %}{% set developer_id = company_lookup.get((project.developer|lower, 'developer')) %}{% if developer_id %}<a href="{{ url_for('company_details', company_id=developer_id) }}">{{ project.developer }}</a>{% else %}{{ project.developer }}{% endif %}{% else %}Not listed{% endif %}</p>
-    <p><strong>General Contractor:</strong> {% if project.general_contractor %}{% set gc_id = company_lookup.get((project.general_contractor|lower, 'general contractor')) %}{% if gc_id %}<a href="{{ url_for('company_details', company_id=gc_id) }}">{{ project.general_contractor }}</a>{% else %}{{ project.general_contractor }}{% endif %}{% else %}Not listed{% endif %}</p>
-    <p><strong>Electrical Contractor:</strong> {% if project.electrical_contractor %}{% set ec_id = company_lookup.get((project.electrical_contractor|lower, 'electrical contractor')) %}{% if ec_id %}<a href="{{ url_for('company_details', company_id=ec_id) }}">{{ project.electrical_contractor }}</a>{% else %}{{ project.electrical_contractor }}{% endif %}{% else %}Not listed{% endif %}</p>
-    <p><strong>Status:</strong> {{ project.status }}</p>
-    <p><strong>Next Action:</strong> {{ project.next_action }}</p>
-
-    <form method="post" action="{{ url_for('find_electrical_contractor', project_id=project.id) }}" style="margin-top: 12px;">
-        <button class="button" type="submit">Find Electrical Contractor</button>
-    </form>
-
-    {% if apollo_setup_message %}
-    <div class="card" style="margin-top: 16px; border: 1px solid #f6ad55; background: #fffaf0;">
-        <h3>Apollo Setup Required</h3>
-        <p>{{ apollo_setup_message }}</p>
-        <p>Set the APOLLO_API_KEY environment variable to enable live contact search.</p>
-    </div>
-    {% endif %}
-
-    {% if contractor_candidates %}
-    <div class="card" style="margin-top: 16px;">
-        <h3>Top Contractor Candidates</h3>
-        {% for candidate in contractor_candidates %}
-        <div class="company-project-card">
-            <h4>{{ candidate.candidate_name }}</h4>
-            <p><strong>Confidence:</strong> {{ candidate.confidence_score }}/100</p>
-            <p><strong>Source:</strong> <a href="{{ candidate.source_url }}" target="_blank" rel="noopener noreferrer">{{ candidate.source_url }}</a></p>
-            <p><strong>Evidence:</strong> {{ candidate.evidence_snippet }}</p>
-            <form method="post" action="{{ url_for('confirm_contractor', project_id=project.id) }}">
-                <input type="hidden" name="candidate_name" value="{{ candidate.candidate_name }}">
-                <input type="hidden" name="candidate_company" value="{{ project.electrical_contractor }}">
-                <button class="small-button" type="submit">Confirm Contractor</button>
-            </form>
-        </div>
-        {% endfor %}
-    </div>
-    {% endif %}
-
-    <a class="button" href="{{ url_for('home') }}">Back to Dashboard</a>
-    <a class="button" href="{{ url_for('edit_project', project_id=project.id) }}">Edit Project</a>
-    <a class="button" href="{{ url_for('project_research', project_id=project.id) }}">Research</a>
-</div>
-{% endblock %}
+{% extends "base.html" %}{% block content %}<section class="mission-hero compact-hero"><div><p class="eyebrow">{{ project.state }} · PROJECT INTELLIGENCE</p><h2>{{ project.name }}</h2><p>{{ project.current_stage }} · {{ project.confidence }}% confidence</p></div></section>
+<section class="project-workspace">
+<article class="card"><h3>Project Team</h3><dl class="record-fields"><dt>Developer</dt><dd>{{ project.developer or 'Not identified' }}</dd><dt>General Contractor</dt><dd>{{ project.general_contractor or 'Not identified' }}</dd><dt>Electrical Contractor</dt><dd>{{ project.electrical_contractor or 'Not identified' }}</dd><dt>Mechanical Contractor</dt><dd>{{ project.mechanical_contractor or 'Not identified' }}</dd><dt>Current Stage</dt><dd>{{ project.current_stage }}</dd><dt>Confidence</dt><dd>{{ project.confidence }}%</dd><dt>Estimated Revenue</dt><dd>${{ '{:,.0f}'.format(project.estimated_revenue) }}</dd></dl></article>
+<article class="card"><h3>Recommended Next Action</h3><p class="next-action">{{ project.recommended_next_action }}</p><h3>Associated Contacts</h3>{% for contact in project.associated_contacts %}<p>{{ contact }}</p>{% else %}<p>No contacts directly associated yet.</p>{% endfor %}</article>
+<article class="card"><h3>Evidence</h3>{% for evidence in project.evidence %}<a class="result-row" href="{{ evidence.url }}" target="_blank" rel="noopener"><strong>{{ evidence.label }}</strong><span>Open source ↗</span></a>{% else %}<p>No evidence attached; research is required.</p>{% endfor %}</article>
+<article class="card"><h3>Timeline</h3>{% for event in project.timeline %}<div class="timeline-row"><time>{{ event.date }}</time><strong>{{ event.event }}</strong></div>{% else %}<p>No timeline events recorded.</p>{% endfor %}</article></section>
+<p><a class="button" href="{{ url_for('projects_page') }}">Back to State Explorer</a></p>{% endblock %}

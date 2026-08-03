@@ -1,13 +1,2 @@
-{% extends "base.html" %}
-{% block content %}
-<div class="card">
-    <h2>Companies</h2>
-    {% for company in companies %}
-    <div class="company-item">
-        <h3><a href="{{ url_for('company_details', company_id=company.id) }}">{{ company.name }}</a></h3>
-        <p><strong>Company Type:</strong> {{ company.type }}</p>
-        <p><strong>Number of Active Projects:</strong> {{ company.projects | length }}</p>
-    </div>
-    {% endfor %}
-</div>
-{% endblock %}
+{% extends "base.html" %}{% block content %}<section class="mission-hero compact-hero"><div><p class="eyebrow">COMPANY INTELLIGENCE</p><h2>Companies</h2><p>Unique organizations derived from every role in the project feed.</p></div></section>
+<div class="card crm-table-wrap"><table class="crm-table"><thead><tr><th>Company</th><th>Type</th><th>Projects</th><th>Contacts</th><th>Estimated opportunity</th><th>Last activity</th><th>Confidence</th><th>Open tasks</th></tr></thead><tbody>{% for company in companies %}<tr><td><a href="{{ url_for('company_details',company_id=company.id) }}"><strong>{{ company.name }}</strong></a></td><td>{{ company.type }}</td><td>{{ company.projects|length }}</td><td>{{ company.contacts|length }}</td><td>${{ '{:,.0f}'.format(company.estimated_opportunity) }}</td><td>{{ company.last_activity or 'No activity' }}</td><td>{{ company.contractor_confidence }}%</td><td>{{ company.open_tasks }}</td></tr>{% endfor %}</tbody></table></div>{% endblock %}
