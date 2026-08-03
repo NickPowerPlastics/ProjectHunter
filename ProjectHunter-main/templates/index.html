@@ -1,61 +1,129 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="dashboard-header-row">
-    <h2>Today's Opportunities</h2>
-    <a class="button" href="{{ url_for('add_project') }}">Add Project</a>
-</div>
+{% set ns = namespace(favorites=0, contractor_ready=0, research_needed=0) %}
+{% for project in projects %}
+    {% if project.favorite %}{% set ns.favorites = ns.favorites + 1 %}{% endif %}
+    {% if project.electrical_contractor %}{% set ns.contractor_ready = ns.contractor_ready + 1 %}{% else %}{% set ns.research_needed = ns.research_needed + 1 %}{% endif %}
+{% endfor %}
 
-<div class="search-box">
-    <input type="text" id="project-search" placeholder="Search projects..." aria-label="Search projects">
-    <button type="button" id="clear-search" class="small-button">Clear</button>
-</div>
-
-{% if has_favorites %}
-<div class="card favorites-section">
-    <h3>Favorites</h3>
-</div>
-{% endif %}
-
-<div id="project-list">
-    {% for project in projects %}
-    <div class="card project-card" data-search="{{ project.name }} {{ project.developer }} {{ project.general_contractor }} {{ project.electrical_contractor }} {{ project.state }} {{ project.market }} {{ project.status }}">
-        <div class="project-card-header">
-            <h3>{{ project.name }}</h3>
-            <form method="post" action="{{ url_for('toggle_favorite', project_id=project.id) }}">
-                <button class="favorite-button{% if project.favorite %} active{% endif %}" type="submit" aria-label="Toggle favorite">★</button>
-            </form>
-        </div>
-        <span class="score-badge {{ 'score-green' if (project.score if project.score is defined else 0) >= 80 else 'score-orange' if (project.score if project.score is defined else 0) >= 50 else 'score-red' }}">Score: {{ project.score if project.score is defined else 0 }}</span>
-        <p><strong>Market:</strong> {{ project.market }}</p>
-        <p><strong>Business Line:</strong> {{ project.business_line }}</p>
-        <p><strong>Electrical Contractor:</strong> {{ project.electrical_contractor }}</p>
-        <p class="status">Next step: {{ project.next_action }}</p>
-        <a class="button" href="{{ url_for('project_details', project_id=project.id) }}">View Project</a>
+<section class="mission-hero">
+    <div>
+        <p class="eyebrow">POWER PLASTICS SALES INTELLIGENCE</p>
+        <h2>Mission Control</h2>
+        <p>What needs attention today, without hunting through the app.</p>
     </div>
-    {% endfor %}
+    <a class="button" href="{{ url_for('discover_projects_page') }}">Find Opportunities</a>
+</section>
+
+<section class="metric-grid" aria-label="Mission Control metrics">
+    <a class="metric-card" href="{{ url_for('home') }}">
+        <span class="metric-label">Active Projects</span>
+        <strong>{{ projects|length }}</strong>
+        <span>Tracked opportunities</span>
+    </a>
+    <a class="metric-card" href="{{ url_for('home') }}">
+        <span class="metric-label">High Priority</span>
+        <strong>{{ ns.favorites }}</strong>
+        <span>Favorited projects</span>
+    </a>
+    <a class="metric-card metric-good" href="{{ url_for('discover_projects_page') }}">
+        <span class="metric-label">Contractor Identified</span>
+        <strong>{{ ns.contractor_ready }}</strong>
+        <span>Ready for contact research</span>
+    </a>
+    <a class="metric-card metric-alert" href="{{ url_for('discover_projects_page') }}">
+        <span class="metric-label">Needs Research</span>
+        <strong>{{ ns.research_needed }}</strong>
+        <span>Electrical contractor missing</span>
+    </a>
+</section>
+
+<div class="mission-layout">
+    <section class="card priority-panel">
+        <div class="section-heading-row">
+            <div>
+                <h3>Today's Priorities</h3>
+                <p class="section-subtitle">Highest-scoring opportunities and their next action.</p>
+            </div>
+            <a href="{{ url_for('contacts_page') }}">Open contacts →</a>
+        </div>
+        <div class="priority-list">
+            {% for project in projects[:6] %}
+            <a class="priority-item" href="{{ url_for('project_details', project_id=project.id) }}">
+                <span class="priority-rank">{{ loop.index }}</span>
+                <span class="priority-copy">
+                    <strong>{{ project.name }}</strong>
+                    <small>{{ project.electrical_contractor or 'Electrical contractor research needed' }}</small>
+                </span>
+                <span class="priority-action">{{ project.next_action or 'Review opportunity' }}</span>
+                <span class="score-badge {{ 'score-green' if (project.score if project.score is defined else 0) >= 80 else 'score-orange' if (project.score if project.score is defined else 0) >= 50 else 'score-red' }}">{{ project.score if project.score is defined else 0 }}</span>
+            </a>
+            {% else %}
+            <p>No projects have been added yet.</p>
+            {% endfor %}
+        </div>
+    </section>
+
+    <aside class="card quick-actions-panel">
+        <h3>Quick Actions</h3>
+        <a class="quick-action" href="{{ url_for('contacts_page') }}"><strong>Email a contact</strong><span>Open vetted outreach contacts</span></a>
+        <a class="quick-action" href="{{ url_for('discover_projects_page') }}"><strong>Run opportunity finder</strong><span>Connect projects to contractors and people</span></a>
+        <a class="quick-action" href="{{ url_for('add_project') }}"><strong>Add a project</strong><span>Capture a new lead manually</span></a>
+    </aside>
 </div>
 
-<div id="no-results" class="no-results" hidden>No matching projects found.</div>
+<section class="card project-browser">
+    <div class="dashboard-header-row">
+        <div>
+            <h3>Opportunity Pipeline</h3>
+            <p class="section-subtitle">Search and review every tracked project.</p>
+        </div>
+        <a class="button" href="{{ url_for('add_project') }}">Add Project</a>
+    </div>
+
+    <div class="search-box">
+        <input type="text" id="project-search" placeholder="Search projects, contractors, states or status..." aria-label="Search projects">
+        <button type="button" id="clear-search" class="small-button">Clear</button>
+    </div>
+
+    <div id="project-list" class="pipeline-grid">
+        {% for project in projects %}
+        <article class="project-tile" data-search="{{ project.name }} {{ project.developer }} {{ project.general_contractor }} {{ project.electrical_contractor }} {{ project.state }} {{ project.market }} {{ project.status }}">
+            <div class="project-card-header">
+                <div>
+                    <p class="eyebrow">{{ project.state }} · {{ project.market }}</p>
+                    <h3>{{ project.name }}</h3>
+                </div>
+                <form method="post" action="{{ url_for('toggle_favorite', project_id=project.id) }}">
+                    <button class="favorite-button{% if project.favorite %} active{% endif %}" type="submit" aria-label="Toggle favorite">★</button>
+                </form>
+            </div>
+            <p><strong>Electrical:</strong> {{ project.electrical_contractor or 'Research needed' }}</p>
+            <p class="status">{{ project.next_action or 'Review opportunity' }}</p>
+            <div class="tile-footer">
+                <span class="score-badge {{ 'score-green' if (project.score if project.score is defined else 0) >= 80 else 'score-orange' if (project.score if project.score is defined else 0) >= 50 else 'score-red' }}">Score {{ project.score if project.score is defined else 0 }}</span>
+                <a href="{{ url_for('project_details', project_id=project.id) }}">Open →</a>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+    <div id="no-results" class="no-results" hidden>No matching projects found.</div>
+</section>
 
 <script>
     const searchInput = document.getElementById('project-search');
     const clearButton = document.getElementById('clear-search');
-    const projectCards = Array.from(document.querySelectorAll('.project-card'));
+    const projectCards = Array.from(document.querySelectorAll('.project-tile'));
     const noResults = document.getElementById('no-results');
 
     function filterProjects() {
         const query = searchInput.value.trim().toLowerCase();
         let visibleCount = 0;
-
         projectCards.forEach((card) => {
-            const haystack = card.getAttribute('data-search').toLowerCase();
-            const matches = haystack.includes(query);
+            const matches = card.getAttribute('data-search').toLowerCase().includes(query);
             card.style.display = matches ? '' : 'none';
-            if (matches) {
-                visibleCount += 1;
-            }
+            if (matches) visibleCount += 1;
         });
-
         noResults.hidden = visibleCount !== 0;
     }
 
