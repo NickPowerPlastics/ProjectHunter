@@ -1,6 +1,8 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Project Hunter</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
@@ -8,29 +10,28 @@
     <div class="app-shell">
         <aside class="sidebar">
             <div class="sidebar-header">
-                <h2>Project Hunter</h2>
-                <p>Sales Intelligence</p>
+                <span class="brand-mark">PH</span>
+                <div><h2>Project Hunter</h2><p>Power Plastics</p></div>
             </div>
             <nav>
-                <a class="nav-link{% if active_page == 'dashboard' %} active{% endif %}" href="{{ url_for('home') }}">Dashboard</a>
-                <a class="nav-link{% if active_page == 'projects' %} active{% endif %}" href="{{ url_for('projects_page') }}">Projects</a>
+                <a class="nav-link{% if active_page == 'dashboard' %} active{% endif %}" href="{{ url_for('home') }}">Mission Control</a>
                 <a class="nav-link{% if active_page == 'discover' %} active{% endif %}" href="{{ url_for('discover_projects_page') }}">Opportunity Finder</a>
+                <a class="nav-link{% if active_page == 'contacts' %} active{% endif %}" href="{{ url_for('contacts_page') }}">Contacts CRM</a>
                 <a class="nav-link{% if active_page == 'companies' %} active{% endif %}" href="{{ url_for('companies_page') }}">Companies</a>
                 <a class="nav-link{% if active_page == 'accounts' %} active{% endif %}" href="{{ url_for('accounts_page') }}">Accounts</a>
-                <a class="nav-link{% if active_page == 'contacts' %} active{% endif %}" href="{{ url_for('contacts_page') }}">Contacts</a>
-                <a class="nav-link{% if active_page == 'tasks' %} active{% endif %}" href="{{ url_for('tasks_page') }}">Tasks</a>
+                <a class="nav-link{% if active_page == 'tasks' %} active{% endif %}" href="{{ url_for('tasks_page') }}">Follow Ups</a>
             </nav>
+            <div class="sidebar-footer">
+                <span class="live-dot"></span> Intelligence workspace
+            </div>
         </aside>
 
         <div class="content-area">
-            <header class="page-header">
-                <h1>Project Hunter</h1>
-                <p>Power Plastics Sales Intelligence</p>
+            <header class="topbar">
+                <div><h1>Project Hunter</h1><p>Find the project. Reach the right people. Win the work.</p></div>
+                <span class="workspace-badge">Power Plastics</span>
             </header>
-
-            <main>
-                {% block content %}{% endblock %}
-            </main>
+            <main>{% block content %}{% endblock %}</main>
         </div>
     </div>
 </body>
