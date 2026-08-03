@@ -1,76 +1,138 @@
 {% extends "base.html" %}
 {% block content %}
-<h2>Research: {{ project.name }}</h2>
-<div class="card research-card">
-    <div class="research-actions">
-        <a class="button" href="{{ url_for('project_details', project_id=project.id) }}">Back to Project</a>
-        <button class="button secondary-button" type="button">Run Research</button>
+<div class="research-workspace">
+    <div class="research-header">
+        <div>
+            <h2>Research Workspace</h2>
+            <p>{{ project.name }} • {{ project.market }} • {{ project.state }}</p>
+        </div>
+        <div class="research-actions">
+            <a class="button" href="{{ url_for('project_details', project_id=project.id) }}">Back to Project</a>
+            <form method="post" action="{{ url_for('project_research', project_id=project.id) }}">
+                <button class="button secondary-button" type="submit">Run Research</button>
+            </form>
+        </div>
     </div>
+
+    <p class="research-hint">{{ workspace.research_hint }}</p>
     <p class="research-hint">Research providers coming soon.</p>
 
-    <div class="research-section">
-        <h3>Project Overview</h3>
-        <p>No research available yet.</p>
+    <div class="workspace-tabs">
+        {% for tab in workspace.workspace_tabs %}
+        <a class="workspace-tab {% if loop.first %}active{% endif %}" href="#">{{ tab }}</a>
+        {% endfor %}
     </div>
 
-    <div class="research-section">
-        <h3>Developer</h3>
-        <p>No research available yet.</p>
-    </div>
+    <div class="research-layout">
+        <aside class="card research-sidebar">
+            <h3>Project Snapshot</h3>
+            <div class="workspace-overview-grid">
+                {% for card in workspace.summary_cards %}
+                <div class="workspace-summary-card">
+                    <h3>{{ card.title }}</h3>
+                    <p>{{ card.value }}</p>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="workspace-section">
+                <h3>Key Notes</h3>
+                <p>{{ workspace.ai_notes_content }}</p>
+            </div>
+        </aside>
 
-    <div class="research-section">
-        <h3>General Contractor</h3>
-        <p>No research available yet.</p>
-    </div>
+        <section class="card research-main">
+            <div class="research-section">
+                <h3>Overview</h3>
+                <p>{{ workspace.overview_content }}</p>
+            </div>
 
-    <div class="research-section">
-        <h3>Electrical Contractor</h3>
-        <p>No research available yet.</p>
-    </div>
+            <div class="research-section">
+                <h3>Contractors</h3>
+                <p><strong>Developer:</strong> {{ workspace.developer_content }}<br>
+                <strong>General Contractor:</strong> {{ workspace.general_contractor_content }}<br>
+                <strong>Electrical Contractor:</strong> {{ workspace.electrical_contractor_content }}<br>
+                <strong>Civil Contractor:</strong> {{ workspace.civil_contractor_content }}<br>
+                <strong>Utility Company:</strong> {{ workspace.utility_content }}</p>
+            </div>
 
-    <div class="research-section">
-        <h3>Civil Contractor</h3>
-        <p>No research available yet.</p>
-    </div>
+            <div class="research-section">
+                <h3>Contacts</h3>
+                <p>{{ workspace.contacts_content }}</p>
+            </div>
 
-    <div class="research-section">
-        <h3>Utility Company</h3>
-        <p>No research available yet.</p>
-    </div>
+            <div class="research-section">
+                <h3>News</h3>
+                <p>{{ workspace.news_content }}</p>
+            </div>
 
-    <div class="research-section">
-        <h3>Project News</h3>
-        <p>No research available yet.</p>
-    </div>
+            <div class="research-section">
+                <h3>Documents</h3>
+                <p>{{ workspace.documents_content }}</p>
+            </div>
 
-    <div class="research-section">
-        <h3>Permit Information</h3>
-        <p>No research available yet.</p>
-    </div>
+            <div class="research-section">
+                <h3>AI Notes</h3>
+                <p>{{ workspace.ai_notes_content }}</p>
+            </div>
 
-    <div class="research-section">
-        <h3>Apollo Contacts</h3>
-        <p>No research available yet.</p>
-    </div>
+            <div class="research-section">
+                <h3>Timeline</h3>
+                <p>{{ workspace.timeline_content }}</p>
+            </div>
 
-    <div class="research-section">
-        <h3>HubSpot Activity</h3>
-        <p>No research available yet.</p>
-    </div>
-
-    <div class="research-section">
-        <h3>Method Quote History</h3>
-        <p>No research available yet.</p>
-    </div>
-
-    <div class="research-section">
-        <h3>AI Notes</h3>
-        <p>No research available yet.</p>
-    </div>
-
-    <div class="research-section">
-        <h3>Recommended Next Action</h3>
-        <p>No research available yet.</p>
+            <div class="workspace-section">
+                <h3>Project Overview</h3>
+                <p>{{ workspace.overview_content }}</p>
+            </div>
+            <div class="research-section">
+                <h3>Developer</h3>
+                <p>{{ workspace.developer_content }}</p>
+            </div>
+            <div class="research-section">
+                <h3>General Contractor</h3>
+                <p>{{ workspace.general_contractor_content }}</p>
+            </div>
+            <div class="research-section">
+                <h3>Electrical Contractor</h3>
+                <p>{{ workspace.electrical_contractor_content }}</p>
+            </div>
+            <div class="research-section">
+                <h3>Civil Contractor</h3>
+                <p>{{ workspace.civil_contractor_content }}</p>
+            </div>
+            <div class="research-section">
+                <h3>Utility Company</h3>
+                <p>{{ workspace.utility_content }}</p>
+            </div>
+            <div class="research-section">
+                <h3>Project News</h3>
+                <p>{{ workspace.news_content }}</p>
+            </div>
+            <div class="research-section">
+                <h3>Permit Information</h3>
+                <p>{{ workspace.documents_content }}</p>
+            </div>
+            <div class="research-section">
+                <h3>Apollo Contacts</h3>
+                <p>{{ workspace.contacts_content }}</p>
+            </div>
+            <div class="research-section">
+                <h3>HubSpot Activity</h3>
+                <p>{{ workspace.ai_notes_content }}</p>
+            </div>
+            <div class="research-section">
+                <h3>Method Quote History</h3>
+                <p>{{ workspace.timeline_content }}</p>
+            </div>
+            <div class="research-section">
+                <h3>AI Notes</h3>
+                <p>{{ workspace.ai_notes_content }}</p>
+            </div>
+            <div class="research-section">
+                <h3>Recommended Next Action</h3>
+                <p>{{ workspace.timeline_content }}</p>
+            </div>
+        </section>
     </div>
 </div>
 {% endblock %}

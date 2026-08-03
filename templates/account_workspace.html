@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+    <h2>{{ account.name }}</h2>
+    <div class="workspace-tabs">
+        <a class="workspace-tab active" href="#">Overview</a>
+        <a class="workspace-tab" href="#">Projects</a>
+        <a class="workspace-tab" href="#">Contacts</a>
+        <a class="workspace-tab" href="#">HubSpot</a>
+        <a class="workspace-tab" href="#">Apollo</a>
+        <a class="workspace-tab" href="#">Method</a>
+        <a class="workspace-tab" href="#">Notes</a>
+        <a class="workspace-tab" href="#">Activity</a>
+    </div>
+
+    <div class="workspace-overview-grid">
+        <div class="workspace-summary-card">
+            <h3>Company Name</h3>
+            <p>{{ account.name }}</p>
+        </div>
+        <div class="workspace-summary-card">
+            <h3>Company Type</h3>
+            <p>{{ account.company_type }}</p>
+        </div>
+        <div class="workspace-summary-card">
+            <h3>Headquarters</h3>
+            <p>{{ account.headquarters or 'Placeholder data' }}</p>
+        </div>
+        <div class="workspace-summary-card">
+            <h3>Website</h3>
+            <p>{{ account.website or 'Placeholder data' }}</p>
+        </div>
+        <div class="workspace-summary-card">
+            <h3>Active Projects</h3>
+            <p>{{ account.active_projects }}</p>
+        </div>
+        <div class="workspace-summary-card">
+            <h3>Opportunity Score</h3>
+            <p>{{ account.opportunity_score }}</p>
+        </div>
+        <div class="workspace-summary-card">
+            <h3>Last Activity</h3>
+            <p>{{ account.last_activity or 'Placeholder data' }}</p>
+        </div>
+        <div class="workspace-summary-card">
+            <h3>Recommended Next Action</h3>
+            <p>{{ account.recommended_next_action or 'Placeholder data' }}</p>
+        </div>
+    </div>
+
+    <div class="workspace-section">
+        <h3>Workspace Notes</h3>
+        <p>Placeholder content for the selected tab. Integrations such as HubSpot, Apollo, and Method can be connected later.</p>
+    </div>
+</div>
+{% endblock %}

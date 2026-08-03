@@ -282,3 +282,112 @@ main {
     border-radius: 6px;
     font-weight: 600;
 }
+
+.opportunity-sections {
+    display: grid;
+    gap: 18px;
+    margin-top: 18px;
+}
+
+.opportunity-section {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 14px;
+    background: #f8fafc;
+}
+
+.opportunity-section h3 {
+    margin-top: 0;
+}
+
+.workspace-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 16px 0 20px;
+}
+
+.workspace-tab {
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: #e2e8f0;
+    color: #183b56;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.workspace-tab.active {
+    background: #1f6feb;
+    color: white;
+}
+
+.workspace-overview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+}
+
+.workspace-summary-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 14px;
+    background: #f8fafc;
+}
+
+.workspace-summary-card h3 {
+    margin: 0 0 8px 0;
+    font-size: 0.95rem;
+    color: #64748b;
+}
+
+.workspace-summary-card p {
+    margin: 0;
+    font-weight: 600;
+}
+
+.workspace-section {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.research-workspace {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.research-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.research-header h2 {
+    margin: 0 0 6px 0;
+}
+
+.research-header p {
+    margin: 0;
+    color: #64748b;
+}
+
+.research-layout {
+    display: grid;
+    grid-template-columns: minmax(240px, 320px) 1fr;
+    gap: 18px;
+    align-items: start;
+}
+
+.research-sidebar h3,
+.research-main h3 {
+    margin-top: 0;
+}
+
+@media (max-width: 800px) {
+    .research-layout {
+        grid-template-columns: 1fr;
+    }
+}

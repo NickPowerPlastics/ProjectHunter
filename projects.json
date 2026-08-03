@@ -2,40 +2,35 @@
   {
     "id": 1,
     "name": "Microsoft Goodyear",
-    "state": "Texas",
+    "state": "Arizona",
     "market": "Data Centers",
     "business_line": "Duct Bank",
-    "developer": "Microsoft",
-    "general_contractor": "Turner Construction",
-    "electrical_contractor": "Research needed",
-    "status": "Opportunity 1",
+    "developer": "Example Developer",
+    "general_contractor": "Example GC",
+    "electrical_contractor": "",
+    "status": "Research needed",
     "next_action": "Identify electrical contractor",
-    "score": 80
-  },
-  {
-    "id": 2,
-    "name": "EdgeCore Mesa",
-    "state": "Arizona",
-    "market": "Data Centers",
-    "business_line": "Duct Bank",
-    "developer": "EdgeCore",
-    "general_contractor": "Corbins",
-    "electrical_contractor": "Corbins",
-    "status": "In Review",
-    "next_action": "Contact preconstruction",
-    "score": 90
-  },
-  {
-    "id": 3,
-    "name": "Prime Avondale",
-    "state": "Arizona",
-    "market": "Data Centers",
-    "business_line": "Duct Bank",
-    "developer": "Prime",
-    "general_contractor": "ARCO/Murray",
-    "electrical_contractor": "Research needed",
-    "status": "Opportunity",
-    "next_action": "Find electrical subcontractor",
-    "score": 70
+    "score": 60,
+    "favorite": false,
+    "contractor_candidates": [
+      {
+        "candidate_name": "Microsoft Goodyear Electrical Team",
+        "confidence_score": 91,
+        "source_url": "https://example.com/contractor-search",
+        "evidence_snippet": "Matches Example Developer and mission critical electrical work"
+      },
+      {
+        "candidate_name": "Blue Ridge Power",
+        "confidence_score": 78,
+        "source_url": "https://example.com/contractor-search-2",
+        "evidence_snippet": "Active in Arizona data center electrical installations"
+      },
+      {
+        "candidate_name": "Mission Critical Electric",
+        "confidence_score": 72,
+        "source_url": "https://example.com/contractor-search-3",
+        "evidence_snippet": "Known for high-density power distribution and critical facilities"
+      }
+    ]
   }
 ]

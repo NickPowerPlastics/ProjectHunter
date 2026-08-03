@@ -2,16 +2,59 @@
 {% block content %}
 <div class="card">
     <h2>{{ company.name }}</h2>
+    <form method="post" action="{{ url_for('company_details', company_id=company.id) }}" style="margin-bottom: 12px;">
+        <button class="button" type="submit">Lookup in Apollo</button>
+    </form>
     <p><strong>Company Type:</strong> {{ company.type }}</p>
+    <p><strong>Headquarters:</strong> {{ company.headquarters or 'Not listed' }}</p>
+    <p><strong>Website:</strong> {{ company.website or 'Not listed' }}</p>
+    <p><strong>States Worked:</strong> {{ company.states_worked | join(', ') or 'Not listed' }}</p>
+
+    <h3>Known Projects</h3>
+    {% if company.known_projects %}
+    <ul>
+        {% for project_name in company.known_projects %}
+        <li>{{ project_name }}</li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>No projects listed yet.</p>
+    {% endif %}
+
+    <h3>Total Opportunities</h3>
+    <p>{{ company.total_opportunities }}</p>
+
+    <h3>Total Quotes</h3>
+    <p>{{ company.total_quotes }}</p>
+
+    <h3>Total Orders</h3>
+    <p>{{ company.total_orders }}</p>
 
     <h3>Associated Projects</h3>
     {% for project in company.projects %}
     <div class="company-project-card">
-        <h4>{{ project.name }}</h4>
+        <h4><a href="{{ url_for('project_details', project_id=project.id) }}">{{ project.name }}</a></h4>
         <p><strong>Market:</strong> {{ project.market }}</p>
         <p><strong>Status:</strong> {{ project.status }}</p>
     </div>
     {% endfor %}
+
+    <h3>Apollo</h3>
+    {% if apollo_profile %}
+    <p><strong>Company Name:</strong> {{ apollo_profile.company_name }}</p>
+    <p><strong>Website:</strong> {{ apollo_profile.website }}</p>
+    <p><strong>Headquarters:</strong> {{ apollo_profile.headquarters }}</p>
+    <p><strong>Employee Count:</strong> {{ apollo_profile.employee_count }}</p>
+    <p><strong>Industry:</strong> {{ apollo_profile.industry }}</p>
+    <p><strong>Revenue Range:</strong> {{ apollo_profile.revenue_range }}</p>
+    <p><strong>Number of Apollo Contacts:</strong> {{ apollo_profile.number_of_contacts }}</p>
+    <p><strong>Last Updated:</strong> {{ apollo_profile.last_updated }}</p>
+    {% else %}
+    <p>No Apollo profile loaded yet.</p>
+    {% endif %}
+
+    <h3>Notes</h3>
+    <p>{{ company.notes or 'No notes available.' }}</p>
 
     <h3>Apollo Contacts</h3>
     <p>Contact information will appear here.</p>
@@ -21,8 +64,5 @@
 
     <h3>Method Quote History</h3>
     <p>Quote history will appear here.</p>
-
-    <h3>Notes</h3>
-    <p>Notes will appear here.</p>
 </div>
 {% endblock %}

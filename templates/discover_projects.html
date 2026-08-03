@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="card">
-    <h2>Discover Projects</h2>
+    <h2>Opportunity Finder</h2>
+    <p class="research-hint">Discover Projects</p>
     <form class="discover-form" method="get" action="{{ url_for('discover_projects_page') }}">
         <label>
             <span>Search Region</span>
@@ -31,40 +32,103 @@
     <div class="success-message">{{ message }}</div>
     {% endif %}
 
-    <table class="discover-table">
-        <thead>
-            <tr>
-                <th>Project</th>
-                <th>State</th>
-                <th>Developer</th>
-                <th>Estimated Stage</th>
-                <th>Estimated Opportunity Score</th>
-                <th>Import</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for project in discover_projects %}
-            <tr>
-                <td>{{ project.project_name }}</td>
-                <td>{{ project.state }}</td>
-                <td>{{ project.developer }}</td>
-                <td>{{ project.estimated_stage }}</td>
-                <td>{{ project.estimated_opportunity_score }}</td>
-                <td>
-                    {% if project.imported %}
-                    <span>Imported</span>
+    <div class="opportunity-sections">
+        <section class="opportunity-section">
+            <h3>New Opportunities</h3>
+            <table class="discover-table">
+                <thead>
+                    <tr>
+                        <th>Opportunity Score</th>
+                        <th>Project</th>
+                        <th>State</th>
+                        <th>Developer</th>
+                        <th>General Contractor</th>
+                        <th>Electrical Contractor</th>
+                        <th>Source</th>
+                        <th>Import</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for project in discover_projects %}
+                    <tr>
+                        <td>{{ project.estimated_opportunity_score }}</td>
+                        <td>{{ project.project_name }}{% if project.project_name == 'West Valley Data Center' %} (West Valley){% endif %}</td>
+                        <td>{{ project.state }}</td>
+                        <td>{{ project.developer }}</td>
+                        <td>{{ project.general_contractor or 'Pending' }}</td>
+                        <td>{{ project.electrical_contractor or 'Pending' }}</td>
+                        <td>{{ project.market }}</td>
+                        <td>
+                            {% if project.imported %}
+                            <span>Imported</span>
+                            {% else %}
+                            <form method="post" action="{{ url_for('import_discovered_project') }}">
+                                <input type="hidden" name="project_name" value="{{ project.project_name }}">
+                                <input type="hidden" name="region" value="{{ region }}">
+                                <input type="hidden" name="market" value="{{ market }}">
+                                <button class="small-button" type="submit">Import</button>
+                            </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+
+        <section class="opportunity-section">
+            <h3>Projects Needing Research</h3>
+            <table class="discover-table">
+                <thead>
+                    <tr>
+                        <th>Project</th>
+                        <th>Missing Information</th>
+                        <th>Research</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for project in projects_needing_research %}
+                    <tr>
+                        <td>{{ project.name }}</td>
+                        <td>{{ project.missing_information }}</td>
+                        <td>
+                            <a class="button secondary-button" href="{{ url_for('project_research', project_id=project.id) }}">Research</a>
+                        </td>
+                    </tr>
                     {% else %}
-                    <form method="post" action="{{ url_for('import_discovered_project') }}">
-                        <input type="hidden" name="project_name" value="{{ project.project_name }}">
-                        <input type="hidden" name="region" value="{{ region }}">
-                        <input type="hidden" name="market" value="{{ market }}">
-                        <button class="small-button" type="submit">Import</button>
-                    </form>
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                    <tr><td colspan="3">No projects need research right now.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+
+        <section class="opportunity-section">
+            <h3>Ready to Contact</h3>
+            <table class="discover-table">
+                <thead>
+                    <tr>
+                        <th>Project</th>
+                        <th>Contractor</th>
+                        <th>Best Contact</th>
+                        <th>Recommended Next Action</th>
+                        <th>Open Project</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for project in ready_to_contact %}
+                    <tr>
+                        <td>{{ project.name }}</td>
+                        <td>{{ project.contractor }}</td>
+                        <td>{{ project.best_contact }}</td>
+                        <td>{{ project.recommended_next_action }}</td>
+                        <td><a class="button secondary-button" href="{{ url_for('project_details', project_id=project.id) }}">Open Project</a></td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="5">No projects are ready for outreach yet.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    </div>
 </div>
 {% endblock %}
