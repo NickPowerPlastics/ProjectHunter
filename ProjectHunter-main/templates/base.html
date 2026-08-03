@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Project Hunter</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='sprint1.css') }}">
 </head>
 <body>
     <div class="app-shell">
@@ -21,9 +22,7 @@
                 <a class="nav-link{% if active_page == 'accounts' %} active{% endif %}" href="{{ url_for('accounts_page') }}">Accounts</a>
                 <a class="nav-link{% if active_page == 'tasks' %} active{% endif %}" href="{{ url_for('tasks_page') }}">Follow Ups</a>
             </nav>
-            <div class="sidebar-footer">
-                <span class="live-dot"></span> Intelligence workspace
-            </div>
+            <div class="sidebar-footer"><span class="live-dot"></span> Intelligence workspace</div>
         </aside>
 
         <div class="content-area">
