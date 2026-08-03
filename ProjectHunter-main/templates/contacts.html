@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-header">
+    <div>
+        <h2>Arizona Outreach Contacts</h2>
+        <p>Real contacts ready for email outreach. Sorted by sales relevance.</p>
+    </div>
+</div>
+
+<form class="contact-filter card" method="get">
+    <label for="company">Company</label>
+    <select id="company" name="company" onchange="this.form.submit()">
+        <option value="">All companies</option>
+        {% for company in companies %}
+        <option value="{{ company }}" {% if selected_company == company %}selected{% endif %}>{{ company }}</option>
+        {% endfor %}
+    </select>
+</form>
+
+<div class="contact-grid">
+    {% for contact in contacts %}
+    <article class="card contact-card">
+        <div class="contact-card-header">
+            <div>
+                <h3>{{ contact.name }}</h3>
+                <p class="contact-title">{{ contact.title }}</p>
+            </div>
+            <span class="status-pill status-{{ contact.email_status|lower|replace(' ', '-') }}">{{ contact.email_status }}</span>
+        </div>
+        <p><strong>{{ contact.company }}</strong><br>{{ contact.location }}</p>
+        <p class="contact-email">{{ contact.email }}</p>
+        <div class="contact-actions">
+            <a class="button" href="{{ contact.email_url }}">Email</a>
+            <a class="button secondary-button" href="{{ url_for('contacts_page', company=contact.company) }}">Company contacts</a>
+        </div>
+    </article>
+    {% else %}
+    <div class="card"><p>No contacts match this filter.</p></div>
+    {% endfor %}
+</div>
+{% endblock %}

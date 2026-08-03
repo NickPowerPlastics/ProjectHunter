@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="research-workspace">
+    <div class="research-header">
+        <div>
+            <h2>Research Workspace</h2>
+            <p>{{ project.name }} • {{ project.market }} • {{ project.state }}</p>
+        </div>
+        <div class="research-actions">
+            <a class="button" href="{{ url_for('project_details', project_id=project.id) }}">Back to Project</a>
+            <form method="post" action="{{ url_for('project_research', project_id=project.id) }}">
+                <button class="button secondary-button" type="submit">Run Provider Research</button>
+            </form>
+        </div>
+    </div>
+
+    <p class="research-hint">{{ workspace.research_hint }}</p>
+
+    <div class="workspace-overview-grid">
+        {% for card in workspace.summary_cards %}
+        <div class="workspace-summary-card">
+            <h3>{{ card.title }}</h3>
+            <p>{{ card.value }}</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if intelligence.record %}
+    <section class="card intelligence-section">
+        <div class="section-heading-row">
+            <div>
+                <h3>Contractor Intelligence</h3>
+                <p>{{ intelligence.record.display_name }}</p>
+            </div>
+            <span class="status-pill status-confirmed">Loaded</span>
+        </div>
+        <div class="intelligence-summary">
+            <p><strong>Developer:</strong> {{ intelligence.record.developer }}</p>
+            <p><strong>General contractor:</strong> {{ intelligence.record.general_contractor }}</p>
+            <p><strong>Recommended next action:</strong> {{ intelligence.next_action }}</p>
+        </div>
+
+        <div class="contractor-list">
+            {% for contractor in intelligence.contractors %}
+            <article class="contractor-card">
+                <div class="contractor-card-top">
+                    <div>
+                        <h4>{{ contractor.company }}</h4>
+                        <p>{{ contractor.trade }}</p>
+                    </div>
+                    <div class="confidence-score">{{ contractor.confidence }}%</div>
+                </div>
+                <p><strong>{{ contractor.status }}</strong> — {{ contractor.reason }}</p>
+                {% if contractor.evidence %}
+                <div class="evidence-links">
+                    {% for evidence in contractor.evidence %}
+                    <a href="{{ evidence.url }}" target="_blank" rel="noopener">{{ evidence.label }}</a>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </article>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="card intelligence-section">
+        <div class="section-heading-row">
+            <div>
+                <h3>People to Contact</h3>
+                <p>Prioritized purchasing, estimating, preconstruction, and project contacts.</p>
+            </div>
+            <a class="button secondary-button" href="{{ url_for('contacts_page') }}">View all contacts</a>
+        </div>
+        {% if intelligence.contacts %}
+        <div class="contact-grid compact-contact-grid">
+            {% for contact in intelligence.contacts %}
+            <article class="contact-card compact-contact-card">
+                <h4>{{ contact.name }}</h4>
+                <p>{{ contact.title }}<br><strong>{{ contact.company }}</strong></p>
+                <p class="contact-email">{{ contact.email }}</p>
+                <a class="button" href="mailto:{{ contact.email }}?bcc=20887200%40bcc.na2.hubspot.com&amp;subject=Arizona%20data%20center%20duct%20bank%20support">Email</a>
+            </article>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p>No matching contacts are stored yet. The contractor lead is still actionable; use the evidence above to target its estimating or procurement team.</p>
+        {% endif %}
+    </section>
+    {% else %}
+    <section class="card intelligence-section">
+        <h3>No saved intelligence match</h3>
+        <p>This project is not yet in the Arizona intelligence pack. Run provider research, then add a confirmed contractor relationship.</p>
+    </section>
+    {% endif %}
+
+    {% if research_results %}
+    <section class="card intelligence-section">
+        <h3>Provider Results</h3>
+        {% for result in research_results %}
+        <div class="provider-result">
+            <strong>{{ result.section }}</strong>
+            <p>{{ result.content }}</p>
+        </div>
+        {% endfor %}
+    </section>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,36 @@
+[
+  {
+    "id": 1,
+    "name": "Microsoft Goodyear",
+    "state": "Arizona",
+    "market": "Data Centers",
+    "business_line": "Duct Bank",
+    "developer": "Example Developer",
+    "general_contractor": "Example GC",
+    "electrical_contractor": "",
+    "status": "Research needed",
+    "next_action": "Identify electrical contractor",
+    "score": 60,
+    "favorite": false,
+    "contractor_candidates": [
+      {
+        "candidate_name": "Microsoft Goodyear Electrical Team",
+        "confidence_score": 91,
+        "source_url": "https://example.com/contractor-search",
+        "evidence_snippet": "Matches Example Developer and mission critical electrical work"
+      },
+      {
+        "candidate_name": "Blue Ridge Power",
+        "confidence_score": 78,
+        "source_url": "https://example.com/contractor-search-2",
+        "evidence_snippet": "Active in Arizona data center electrical installations"
+      },
+      {
+        "candidate_name": "Mission Critical Electric",
+        "confidence_score": 72,
+        "source_url": "https://example.com/contractor-search-3",
+        "evidence_snippet": "Known for high-density power distribution and critical facilities"
+      }
+    ]
+  }
+]

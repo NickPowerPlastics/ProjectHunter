@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+    <h2>Opportunity Finder</h2>
+    <p class="research-hint">Discover Projects</p>
+    <form class="discover-form" method="get" action="{{ url_for('discover_projects_page') }}">
+        <label>
+            <span>Search Region</span>
+            <select name="region">
+                <option value="Arizona"{% if region == 'Arizona' %} selected{% endif %}>Arizona</option>
+                <option value="Texas"{% if region == 'Texas' %} selected{% endif %}>Texas</option>
+                <option value="Nevada"{% if region == 'Nevada' %} selected{% endif %}>Nevada</option>
+                <option value="Utah"{% if region == 'Utah' %} selected{% endif %}>Utah</option>
+                <option value="Colorado"{% if region == 'Colorado' %} selected{% endif %}>Colorado</option>
+                <option value="New Mexico"{% if region == 'New Mexico' %} selected{% endif %}>New Mexico</option>
+            </select>
+        </label>
+        <label>
+            <span>Market</span>
+            <input type="text" name="market" value="{{ market }}">
+        </label>
+        <button class="small-button" type="submit">Search</button>
+    </form>
+
+    <form class="discover-form" method="post" action="{{ url_for('run_discovery') }}">
+        <input type="hidden" name="region" value="{{ region }}">
+        <input type="hidden" name="market" value="{{ market }}">
+        <button class="small-button" type="submit">Run Discovery</button>
+    </form>
+
+    {% if message %}
+    <div class="success-message">{{ message }}</div>
+    {% endif %}
+
+    <div class="opportunity-sections">
+        {% if actionable_opportunities %}
+        <section class="opportunity-section actionable-opportunities">
+            <div class="section-heading-row">
+                <div>
+                    <h3>Ready for Outreach</h3>
+                    <p class="section-subtitle">Saved project intelligence connected to real contacts.</p>
+                </div>
+                <span class="count-pill">{{ actionable_opportunities|length }} opportunities</span>
+            </div>
+            <div class="actionable-grid">
+                {% for opportunity in actionable_opportunities %}
+                <article class="actionable-card">
+                    <div class="actionable-card-top">
+                        <div>
+                            <span class="status-badge status-{{ opportunity.status|lower|replace(' ', '-') }}">{{ opportunity.status }}</span>
+                            <h4>{{ opportunity.project }}</h4>
+                            <p>{{ opportunity.developer }} · GC: {{ opportunity.general_contractor }}</p>
+                        </div>
+                        <div class="confidence-score">{{ opportunity.confidence }}%</div>
+                    </div>
+                    <div class="contractor-line">
+                        <strong>{{ opportunity.contractor }}</strong>
+                        <span>{{ opportunity.trade }}</span>
+                    </div>
+                    <p class="reason-text">{{ opportunity.reason }}</p>
+                    <div class="contact-highlight">
+                        <div>
+                            <strong>{{ opportunity.best_contact.name }}</strong>
+                            <span>{{ opportunity.best_contact.title }}</span>
+                            <small>{{ opportunity.contact_count }} known contact{% if opportunity.contact_count != 1 %}s{% endif %}</small>
+                        </div>
+                        <div class="card-actions">
+                            <a class="button small-button" href="{{ url_for('contacts_page', company=opportunity.contractor) }}">View contacts</a>
+                            <a class="button secondary-button" href="{{ opportunity.best_contact.email_url if opportunity.best_contact.email_url else url_for('contacts_page', company=opportunity.contractor) }}">Email best contact</a>
+                        </div>
+                    </div>
+                    <div class="next-action"><strong>Next:</strong> {{ opportunity.next_action }}</div>
+                    {% if opportunity.evidence %}
+                    <details class="evidence-details">
+                        <summary>Evidence</summary>
+                        {% for evidence in opportunity.evidence %}
+                        <a href="{{ evidence.url }}" target="_blank" rel="noopener">{{ evidence.label }}</a>
+                        {% endfor %}
+                    </details>
+                    {% endif %}
+                </article>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        {% if contractor_campaigns %}
+        <section class="opportunity-section">
+            <div class="section-heading-row">
+                <div>
+                    <h3>Arizona Contractor Campaigns</h3>
+                    <p class="section-subtitle">Qualified companies with outreach-ready contacts. Project awards may still need confirmation.</p>
+                </div>
+            </div>
+            <table class="discover-table">
+                <thead><tr><th>Company</th><th>Best Contact</th><th>Contacts</th><th>Market</th><th>Action</th></tr></thead>
+                <tbody>
+                {% for campaign in contractor_campaigns %}
+                    <tr>
+                        <td><strong>{{ campaign.company }}</strong><br><small>{{ campaign.relationship }}</small></td>
+                        <td>{{ campaign.best_contact.name }}<br><small>{{ campaign.best_contact.title }}</small></td>
+                        <td>{{ campaign.contact_count }}</td>
+                        <td>{{ campaign.market }}</td>
+                        <td><a class="button small-button" href="{{ url_for('contacts_page', company=campaign.company) }}">Open contacts</a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </section>
+        {% endif %}
+
+        <section class="opportunity-section">
+            <h3>Discovery Feed</h3>
+            <table class="discover-table">
+                <thead>
+                    <tr>
+                        <th>Opportunity Score</th>
+                        <th>Project</th>
+                        <th>State</th>
+                        <th>Developer</th>
+                        <th>General Contractor</th>
+                        <th>Electrical Contractor</th>
+                        <th>Source</th>
+                        <th>Import</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for project in discover_projects %}
+                    <tr>
+                        <td>{{ project.estimated_opportunity_score }}</td>
+                        <td>{{ project.project_name }}{% if project.project_name == 'West Valley Data Center' %} (West Valley){% endif %}</td>
+                        <td>{{ project.state }}</td>
+                        <td>{{ project.developer }}</td>
+                        <td>{{ project.general_contractor or 'Pending' }}</td>
+                        <td>{{ project.electrical_contractor or 'Pending' }}</td>
+                        <td>{{ project.market }}</td>
+                        <td>
+                            {% if project.imported %}
+                            <span>Imported</span>
+                            {% else %}
+                            <form method="post" action="{{ url_for('import_discovered_project') }}">
+                                <input type="hidden" name="project_name" value="{{ project.project_name }}">
+                                <input type="hidden" name="region" value="{{ region }}">
+                                <input type="hidden" name="market" value="{{ market }}">
+                                <button class="small-button" type="submit">Import</button>
+                            </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+
+        <section class="opportunity-section">
+            <h3>Projects Needing Research</h3>
+            <table class="discover-table">
+                <thead>
+                    <tr>
+                        <th>Project</th>
+                        <th>Missing Information</th>
+                        <th>Research</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for project in projects_needing_research %}
+                    <tr>
+                        <td>{{ project.name }}</td>
+                        <td>{{ project.missing_information }}</td>
+                        <td>
+                            <a class="button secondary-button" href="{{ url_for('project_research', project_id=project.id) }}">Research</a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="3">No projects need research right now.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+
+        <section class="opportunity-section">
+            <h3>Ready to Contact</h3>
+            <table class="discover-table">
+                <thead>
+                    <tr>
+                        <th>Project</th>
+                        <th>Contractor</th>
+                        <th>Best Contact</th>
+                        <th>Recommended Next Action</th>
+                        <th>Open Project</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for project in ready_to_contact %}
+                    <tr>
+                        <td>{{ project.name }}</td>
+                        <td>{{ project.contractor }}</td>
+                        <td>{{ project.best_contact }}</td>
+                        <td>{{ project.recommended_next_action }}</td>
+                        <td><a class="button secondary-button" href="{{ url_for('project_details', project_id=project.id) }}">Open Project</a></td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="5">No projects are ready for outreach yet.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    </div>
+</div>
+{% endblock %}

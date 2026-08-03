@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+    <h2>Apollo Diagnostics</h2>
+    <p>Apollo API key detected: {% if key_present %}Yes{% else %}No{% endif %}</p>
+    <p><strong>API Key Detected:</strong> {% if key_present %}Yes{% else %}No{% endif %}</p>
+    {% if not key_present %}
+    <p>Set APOLLO_API_KEY in your environment or .env file to enable Apollo lookups.</p>
+    {% endif %}
+    <p><strong>Key length:</strong> {{ key_length }}</p>
+    <p>Environment loaded: {% if environment_loaded %}Yes{% else %}No{% endif %}</p>
+    <p><strong>Environment Loaded:</strong> {% if environment_loaded %}Yes{% else %}No{% endif %}</p>
+    <p><strong>Last Apollo connection attempt:</strong> {{ last_attempt }}</p>
+    <p><strong>Connection status:</strong> {{ connection_status }}</p>
+
+    <div class="card" style="margin-top: 16px; border: 1px solid #cbd5e1;">
+        <h3>Apollo Connection</h3>
+        <p><strong>Authentication Status:</strong> {{ connection_status }}</p>
+        <p><strong>Last Successful Connection:</strong> {{ last_successful_connection }}</p>
+        <p><strong>Response Time:</strong> {% if diagnostics and diagnostics.response_time_ms is not none %}{{ diagnostics.response_time_ms }} ms{% else %}N/A{% endif %}</p>
+        <p><strong>Rate Limit:</strong> {{ diagnostics.rate_limit if diagnostics and diagnostics.rate_limit else 'N/A' }}</p>
+    </div>
+
+    <form method="post" action="{{ url_for('diagnostics_page') }}" style="margin-top: 16px;">
+        <button class="button" type="submit" name="test_connection" value="1">Test Apollo Connection</button>
+    </form>
+
+    {% if diagnostics %}
+    <div class="card" style="margin-top: 16px; border: 1px solid #cbd5e1;">
+        <h3>Connection Results</h3>
+        <p>Connected: {% if diagnostics.connected %}Yes{% else %}No{% endif %}</p>
+        <p><strong>Connected:</strong> {% if diagnostics.connected %}Yes{% else %}No{% endif %}</p>
+        <p>Company/account accessible: {% if diagnostics.company_accessible %}Yes{% else %}No{% endif %}</p>
+        <p><strong>Company/account accessible:</strong> {% if diagnostics.company_accessible %}Yes{% else %}No{% endif %}</p>
+        <p>API response time: {% if diagnostics.response_time_ms is not none %}{{ diagnostics.response_time_ms }} ms{% else %}N/A{% endif %}</p>
+        <p><strong>API response time:</strong> {% if diagnostics.response_time_ms is not none %}{{ diagnostics.response_time_ms }} ms{% else %}N/A{% endif %}</p>
+        <p>Rate limit: {{ diagnostics.rate_limit or 'N/A' }}</p>
+        <p><strong>Rate limit:</strong> {{ diagnostics.rate_limit or 'N/A' }}</p>
+        {% if diagnostics.error_status_code %}
+        <p><strong>HTTP status code:</strong> {{ diagnostics.error_status_code }}</p>
+        {% endif %}
+        {% if diagnostics.error_message %}
+        <p><strong>Error:</strong> {{ diagnostics.error_message }}</p>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

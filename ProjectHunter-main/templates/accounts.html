@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+    <h2>Accounts</h2>
+    <p>Track real company relationships in one workspace.</p>
+    {% for account in accounts %}
+    <div class="company-item">
+        <h3><a href="{{ url_for('account_workspace', account_id=account.id) }}">{{ account.name }}</a></h3>
+        <p><strong>Company Type:</strong> {{ account.company_type }}</p>
+        <p><strong>Active Projects:</strong> {{ account.active_projects }}</p>
+        <p><strong>Opportunity Score:</strong> {{ account.opportunity_score }}</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

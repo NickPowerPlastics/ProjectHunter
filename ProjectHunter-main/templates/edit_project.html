@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+    <h2>Edit Project</h2>
+    <form method="post">
+        <p>
+            <label for="name"><strong>Project Name</strong></label><br>
+            <input type="text" id="name" name="name" value="{{ project.name }}" required>
+        </p>
+        <p>
+            <label for="state"><strong>State</strong></label><br>
+            <input type="text" id="state" name="state" value="{{ project.state }}">
+        </p>
+        <p>
+            <label for="market"><strong>Market</strong></label><br>
+            <input type="text" id="market" name="market" value="{{ project.market }}">
+        </p>
+        <p>
+            <label for="business_line"><strong>Business Line</strong></label><br>
+            <input type="text" id="business_line" name="business_line" value="{{ project.business_line }}">
+        </p>
+        <p>
+            <label for="developer"><strong>Developer</strong></label><br>
+            <input type="text" id="developer" name="developer" value="{{ project.developer }}">
+        </p>
+        <p>
+            <label for="general_contractor"><strong>General Contractor</strong></label><br>
+            <input type="text" id="general_contractor" name="general_contractor" value="{{ project.general_contractor }}">
+        </p>
+        <p>
+            <label for="electrical_contractor"><strong>Electrical Contractor</strong></label><br>
+            <input type="text" id="electrical_contractor" name="electrical_contractor" value="{{ project.electrical_contractor }}">
+        </p>
+        <p>
+            <label for="status"><strong>Status</strong></label><br>
+            <input type="text" id="status" name="status" value="{{ project.status }}">
+        </p>
+        <p>
+            <label for="next_action"><strong>Next Action</strong></label><br>
+            <input type="text" id="next_action" name="next_action" value="{{ project.next_action }}">
+        </p>
+        <button class="button" type="submit">Save Changes</button>
+        <a class="button" href="{{ url_for('project_details', project_id=project.id) }}">Cancel</a>
+    </form>
+</div>
+{% endblock %}

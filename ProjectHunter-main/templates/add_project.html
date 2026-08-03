@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+    <h2>Add Project</h2>
+    <form method="post">
+        <p>
+            <label for="name"><strong>Project Name</strong></label><br>
+            <input type="text" id="name" name="name" required>
+        </p>
+        <p>
+            <label for="state"><strong>State</strong></label><br>
+            <input type="text" id="state" name="state">
+        </p>
+        <p>
+            <label for="market"><strong>Market</strong></label><br>
+            <input type="text" id="market" name="market">
+        </p>
+        <p>
+            <label for="business_line"><strong>Business Line</strong></label><br>
+            <input type="text" id="business_line" name="business_line">
+        </p>
+        <p>
+            <label for="developer"><strong>Developer</strong></label><br>
+            <input type="text" id="developer" name="developer">
+        </p>
+        <p>
+            <label for="general_contractor"><strong>General Contractor</strong></label><br>
+            <input type="text" id="general_contractor" name="general_contractor">
+        </p>
+        <p>
+            <label for="electrical_contractor"><strong>Electrical Contractor</strong></label><br>
+            <input type="text" id="electrical_contractor" name="electrical_contractor">
+        </p>
+        <p>
+            <label for="status"><strong>Status</strong></label><br>
+            <input type="text" id="status" name="status">
+        </p>
+        <p>
+            <label for="next_action"><strong>Next Action</strong></label><br>
+            <input type="text" id="next_action" name="next_action">
+        </p>
+        <button class="button" type="submit">Save Project</button>
+        <a class="button" href="{{ url_for('home') }}">Cancel</a>
+    </form>
+</div>
+{% endblock %}
