@@ -1,68 +1,105 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="card">
-    <h2>{{ company.name }}</h2>
-    <form method="post" action="{{ url_for('company_details', company_id=company.id) }}" style="margin-bottom: 12px;">
-        <button class="button" type="submit">Lookup in Apollo</button>
-    </form>
-    <p><strong>Company Type:</strong> {{ company.type }}</p>
-    <p><strong>Headquarters:</strong> {{ company.headquarters or 'Not listed' }}</p>
-    <p><strong>Website:</strong> {{ company.website or 'Not listed' }}</p>
-    <p><strong>States Worked:</strong> {{ company.states_worked | join(', ') or 'Not listed' }}</p>
-
-    <h3>Known Projects</h3>
-    {% if company.known_projects %}
-    <ul>
-        {% for project_name in company.known_projects %}
-        <li>{{ project_name }}</li>
-        {% endfor %}
-    </ul>
-    {% else %}
-    <p>No projects listed yet.</p>
-    {% endif %}
-
-    <h3>Total Opportunities</h3>
-    <p>{{ company.total_opportunities }}</p>
-
-    <h3>Total Quotes</h3>
-    <p>{{ company.total_quotes }}</p>
-
-    <h3>Total Orders</h3>
-    <p>{{ company.total_orders }}</p>
-
-    <h3>Associated Projects</h3>
-    {% for project in company.projects %}
-    <div class="company-project-card">
-        <h4><a href="{{ url_for('project_details', project_id=project.id) }}">{{ project.name }}</a></h4>
-        <p><strong>Market:</strong> {{ project.market }}</p>
-        <p><strong>Status:</strong> {{ project.status }}</p>
+<section class="mission-hero compact-hero company-workspace-hero">
+    <div>
+        <p class="eyebrow">COMPANY WORKSPACE</p>
+        <h2>{{ company.name }}</h2>
+        <p>{{ company.type }} connected to {{ company.projects|length }} active opportunity{% if company.projects|length != 1 %}ies{% endif %}.</p>
     </div>
-    {% endfor %}
+    <a class="button hero-button" href="{{ url_for('contacts_page', company=company.name) }}">View contacts</a>
+</section>
 
-    <h3>Apollo</h3>
-    {% if apollo_profile %}
-    <p><strong>Company Name:</strong> {{ apollo_profile.company_name }}</p>
-    <p><strong>Website:</strong> {{ apollo_profile.website }}</p>
-    <p><strong>Headquarters:</strong> {{ apollo_profile.headquarters }}</p>
-    <p><strong>Employee Count:</strong> {{ apollo_profile.employee_count }}</p>
-    <p><strong>Industry:</strong> {{ apollo_profile.industry }}</p>
-    <p><strong>Revenue Range:</strong> {{ apollo_profile.revenue_range }}</p>
-    <p><strong>Number of Apollo Contacts:</strong> {{ apollo_profile.number_of_contacts }}</p>
-    <p><strong>Last Updated:</strong> {{ apollo_profile.last_updated }}</p>
-    {% else %}
-    <p>No Apollo profile loaded yet.</p>
-    {% endif %}
+<section class="workspace-kpi-grid">
+    <div class="workspace-kpi"><span>Active projects</span><strong>{{ company.projects|length }}</strong></div>
+    <div class="workspace-kpi"><span>Known contacts</span><strong>{{ company.projects|map(attribute='contacts')|map('length')|sum }}</strong></div>
+    <div class="workspace-kpi"><span>States worked</span><strong>{{ company.states_worked|length }}</strong></div>
+    <div class="workspace-kpi"><span>Next priority</span><strong>{{ company.projects[0].score if company.projects else 0 }}</strong></div>
+</section>
 
-    <h3>Notes</h3>
-    <p>{{ company.notes or 'No notes available.' }}</p>
+<div class="company-workspace-layout">
+    <div>
+        <section class="card workspace-panel">
+            <div class="section-heading-row">
+                <div>
+                    <h3>Opportunity portfolio</h3>
+                    <p class="section-subtitle">Projects where {{ company.name }} is part of the delivery team.</p>
+                </div>
+            </div>
+            {% for project in company.projects %}
+            <article class="workspace-project-row">
+                <div>
+                    <span class="status-pill">{{ project.status }}</span>
+                    <h4><a href="{{ url_for('project_details', project_id=project.id) }}">{{ project.name }}</a></h4>
+                    <p>{{ project.market }} · {{ project.state }}</p>
+                </div>
+                <div class="workspace-project-action">
+                    <strong>Score {{ project.score }}</strong>
+                    <span>{{ project.next_action }}</span>
+                </div>
+            </article>
+            {% else %}
+            <p>No active projects are connected yet.</p>
+            {% endfor %}
+        </section>
 
-    <h3>Apollo Contacts</h3>
-    <p>Contact information will appear here.</p>
+        <section class="card workspace-panel">
+            <div class="section-heading-row">
+                <div>
+                    <h3>Contacts</h3>
+                    <p class="section-subtitle">People tied to this company in the intelligence feed.</p>
+                </div>
+                <a href="{{ url_for('contacts_page', company=company.name) }}">Open CRM →</a>
+            </div>
+            <div class="workspace-contact-grid">
+                {% set shown = [] %}
+                {% for project in company.projects %}
+                    {% for contact in project.contacts %}
+                        {% if contact.company|lower == company.name|lower and contact.email not in shown %}
+                            {% set _ = shown.append(contact.email) %}
+                            <article class="workspace-contact-card">
+                                <strong>{{ contact.name }}</strong>
+                                <span>{{ contact.title }}</span>
+                                <small>{{ contact.email }}</small>
+                                <span class="status-pill status-{{ contact.email_status|lower|replace(' ', '-') }}">{{ contact.email_status }}</span>
+                            </article>
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
+                {% if not shown %}<p>No matching contacts are loaded yet.</p>{% endif %}
+            </div>
+        </section>
+    </div>
 
-    <h3>HubSpot Activity</h3>
-    <p>Activity history will appear here.</p>
+    <aside>
+        <section class="card workspace-panel">
+            <h3>Company summary</h3>
+            <dl class="workspace-detail-list">
+                <dt>Type</dt><dd>{{ company.type }}</dd>
+                <dt>Headquarters</dt><dd>{{ company.headquarters or 'Not listed' }}</dd>
+                <dt>States</dt><dd>{{ company.states_worked|join(', ') or 'Not listed' }}</dd>
+                <dt>Quotes</dt><dd>{{ company.total_quotes }}</dd>
+                <dt>Orders</dt><dd>{{ company.total_orders }}</dd>
+            </dl>
+        </section>
 
-    <h3>Method Quote History</h3>
-    <p>Quote history will appear here.</p>
+        <section class="card workspace-panel">
+            <h3>Recommended next actions</h3>
+            <ol class="workspace-action-list">
+                {% for project in company.projects[:4] %}
+                <li>
+                    <strong>{{ project.name }}</strong>
+                    <span>{{ project.next_action }}</span>
+                </li>
+                {% else %}
+                <li>Research current project activity.</li>
+                {% endfor %}
+            </ol>
+        </section>
+
+        <section class="card workspace-panel">
+            <h3>Notes</h3>
+            <p>{{ company.notes or 'No company notes yet.' }}</p>
+        </section>
+    </aside>
 </div>
 {% endblock %}
