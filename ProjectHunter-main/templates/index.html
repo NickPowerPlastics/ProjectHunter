@@ -10,10 +10,24 @@
 </section>
 <section class="dashboard-panels">
 {% for title, items, detail in [('Recent discoveries',recent_discoveries,'New intelligence entering the pipeline'),('Highest confidence opportunities',high_confidence,'Evidence-backed project teams'),('Projects needing research',needs_research,'Missing contractor intelligence'),('Recently updated projects',recently_updated,'Latest feed activity')] %}
-<article class="card insight-panel"><h3>{{ title }}</h3><p class="section-subtitle">{{ detail }}</p>{% for project in items %}<a class="insight-row" href="{{ url_for('project_details', project_id=project.id) }}"><span><strong>{{ project.name }}</strong><small>{{ project.state }} · {{ project.current_stage }}</small></span><b>{{ project.confidence }}%</b></a>{% else %}<p>No matching projects.</p>{% endfor %}</article>
+<article class="card insight-panel">
+  <div class="panel-heading"><div><h3>{{ title }}</h3><p class="section-subtitle">{{ detail }}</p></div><span class="count-pill">{{ items|length }}</span></div>
+  {% for project in items %}
+  <div class="actionable-insight-row">
+    <a class="insight-main" href="{{ url_for('project_details', project_id=project.id) }}">
+      <span><strong>{{ project.name }}</strong><small>{{ project.state }} · {{ project.current_stage }}</small></span>
+      <b>{{ project.confidence }}%</b>
+    </a>
+    <div class="insight-actions">
+      <span class="next-step">{{ project.next_action or 'Review project intelligence' }}</span>
+      <a class="small-action" href="{{ url_for('project_details', project_id=project.id) }}">Open project →</a>
+    </div>
+  </div>
+  {% else %}<p>No matching projects.</p>{% endfor %}
+</article>
 {% endfor %}
 </section>
 <section class="card project-browser"><div class="dashboard-header-row"><div><h3>State Explorer</h3><p class="section-subtitle">All projects grouped automatically from the intelligence feed.</p></div><a href="{{ url_for('projects_page') }}">Explore all projects →</a></div>
-{% for state in states %}<details class="state-group" {% if loop.first %}open{% endif %}><summary><strong>{{ state.name }}</strong><span>{{ state.projects|length }}</span></summary><div class="state-projects">{% for project in state.projects %}<a href="{{ url_for('project_details', project_id=project.id) }}"><strong>{{ project.name }}</strong><small>{{ project.developer }} · {{ project.current_stage }}</small></a>{% endfor %}</div></details>{% endfor %}
+{% for state in states %}<details class="state-group" {% if loop.first %}open{% endif %}><summary><strong>{{ state.name }}</strong><span>{{ state.projects|length }}</span></summary><div class="state-projects">{% for project in state.projects %}<a href="{{ url_for('project_details', project_id=project.id) }}"><strong>{{ project.name }}</strong><small>{{ project.developer }} · {{ project.current_stage }}</small><em>{{ project.next_action or 'Open project workspace' }}</em></a>{% endfor %}</div></details>{% endfor %}
 </section>
 {% endblock %}
