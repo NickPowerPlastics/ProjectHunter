@@ -1,30 +1,80 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="page-header">
+<section class="mission-hero compact-hero">
     <div>
-        <h2>Arizona Outreach Contacts</h2>
-        <p>Real contacts ready for email outreach. Sorted by sales relevance.</p>
+        <p class="eyebrow">OUTREACH WORKSPACE</p>
+        <h2>Contacts CRM</h2>
+        <p>Vetted people, current email status, and the next action in one place.</p>
     </div>
-</div>
+    <span class="count-pill">{{ contacts|length }} contacts</span>
+</section>
 
 <form class="contact-filter card" method="get">
-    <label for="company">Company</label>
+    <label for="company"><strong>Company</strong></label>
     <select id="company" name="company" onchange="this.form.submit()">
         <option value="">All companies</option>
         {% for company in companies %}
         <option value="{{ company }}" {% if selected_company == company %}selected{% endif %}>{{ company }}</option>
         {% endfor %}
     </select>
+    {% if selected_company %}<a href="{{ url_for('contacts_page') }}">Clear filter</a>{% endif %}
 </form>
 
-<div class="contact-grid">
+<div class="crm-table-wrap card">
+    <table class="crm-table">
+        <thead>
+            <tr>
+                <th>Contact</th>
+                <th>Company</th>
+                <th>Email Health</th>
+                <th>Last Contact</th>
+                <th>Next Action</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for contact in contacts %}
+            <tr>
+                <td>
+                    <strong>{{ contact.name }}</strong>
+                    <small>{{ contact.title }}</small>
+                    <small>{{ contact.location }}</small>
+                </td>
+                <td><strong>{{ contact.company }}</strong></td>
+                <td>
+                    <span class="status-pill status-{{ contact.email_status|lower|replace(' ', '-') }}">{{ contact.email_status }}</span>
+                    <small class="email-value">{{ contact.email }}</small>
+                </td>
+                <td>
+                    <strong>{{ contact.last_contact or 'Not contacted' }}</strong>
+                    <small>{{ contact.open_count or 0 }} tracked opens</small>
+                </td>
+                <td>
+                    {% if 'bounce' in contact.email_status|lower %}
+                        <span class="action-label action-danger">Replace email</span>
+                    {% elif contact.last_contact %}
+                        <span class="action-label action-wait">Follow up</span>
+                    {% else %}
+                        <span class="action-label action-ready">Send introduction</span>
+                    {% endif %}
+                </td>
+                <td class="table-actions">
+                    <a class="button" href="{{ contact.email_url }}">Email</a>
+                    <a class="button secondary-button" href="{{ url_for('contacts_page', company=contact.company) }}">Company</a>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="6">No contacts match this filter.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<section class="contact-grid mobile-contact-grid">
     {% for contact in contacts %}
     <article class="card contact-card">
         <div class="contact-card-header">
-            <div>
-                <h3>{{ contact.name }}</h3>
-                <p class="contact-title">{{ contact.title }}</p>
-            </div>
+            <div><h3>{{ contact.name }}</h3><p class="contact-title">{{ contact.title }}</p></div>
             <span class="status-pill status-{{ contact.email_status|lower|replace(' ', '-') }}">{{ contact.email_status }}</span>
         </div>
         <p><strong>{{ contact.company }}</strong><br>{{ contact.location }}</p>
@@ -34,8 +84,6 @@
             <a class="button secondary-button" href="{{ url_for('contacts_page', company=contact.company) }}">Company contacts</a>
         </div>
     </article>
-    {% else %}
-    <div class="card"><p>No contacts match this filter.</p></div>
     {% endfor %}
-</div>
+</section>
 {% endblock %}
