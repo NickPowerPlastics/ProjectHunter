@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 <section class="mission-hero compact-hero">
-  <div><p class="eyebrow">SALES WORK QUEUE</p><h2>Follow Ups</h2><p>Automatic next steps generated from project activity, research gaps, and contact coverage.</p></div>
+  <div><p class="eyebrow">SALES WORK QUEUE</p><h2>Today's Actions</h2><p>Email, call, research, record the outcome, and schedule the next touch.</p></div>
   <a class="button secondary-button" href="{{ url_for('home', _anchor='follow-ups') }}">Mission Control</a>
 </section>
 
@@ -33,11 +33,11 @@
         <p>{{ task.project.name }} · {{ task.reason }}</p>
         <small>{% if task.contact %}{{ task.contact.title }} · {{ task.contact.company }} · {{ task.contact.email }}{% else %}{{ task.company }}{% endif %}</small>
       </div>
-      <div class="task-actions">{% if task.email_url %}<a class="small-action action-email" href="{{ task.email_url }}">Email</a>{% endif %}<a class="small-action" href="{{ url_for('project_details', project_id=task.project.id) }}">Open Project</a><form method="post" action="{{ url_for('dismiss_follow_up', task_id=task.id) }}"><input type="hidden" name="source" value="tasks"><button class="text-button" type="submit">Dismiss</button></form></div>
+      <div class="task-actions">{% if task.email_url %}<a class="small-action action-email" href="{{ task.email_url }}">Email</a>{% endif %}<a class="small-action" href="{{ url_for('project_details', project_id=task.project.id) }}">Open Project</a><details class="complete-action"><summary>Mark done</summary><form method="post" action="{{ url_for('complete_task', task_id=task.id) }}"><label>Outcome<select name="outcome"><option>Emailed</option><option>Called</option><option>Completed</option><option>No response</option><option>Bounced</option></select></label><label>Note<input name="note" placeholder="What happened?"></label><label>Follow up on<input type="date" name="follow_up_date"></label><button class="small-action action-email" type="submit">Save outcome</button></form></details></div>
     </article>
     {% else %}<p class="empty-state">No active follow-ups match these filters.</p>{% endfor %}
   </div>
 </section>
 
-{% if dismissed_tasks %}<details class="card dismissed-tasks"><summary>Dismissed follow-ups ({{ dismissed_tasks|length }})</summary>{% for task in dismissed_tasks %}<div class="dismissed-row"><span><strong>{{ task.project.name }}</strong><small>{{ task.reason }}</small></span><form method="post" action="{{ url_for('restore_follow_up', task_id=task.id) }}"><button class="text-button" type="submit">Restore</button></form></div>{% endfor %}</details>{% endif %}
+{% if completed_tasks %}<details class="card dismissed-tasks" open><summary>Completed outreach ({{ completed_tasks|length }})</summary>{% for item in completed_tasks %}<div class="dismissed-row"><span><strong>{{ item.record.contact_name or item.action.project.name }}</strong><small>{{ item.record.outcome }} · {{ item.record.project_name }}{% if item.record.follow_up_date %} · Follow up {{ item.record.follow_up_date }}{% endif %}</small>{% if item.record.note %}<small>{{ item.record.note }}</small>{% endif %}</span><form method="post" action="{{ url_for('restore_follow_up', task_id=item.action.id) }}"><button class="text-button" type="submit">Restore</button></form></div>{% endfor %}</details>{% endif %}
 {% endblock %}
