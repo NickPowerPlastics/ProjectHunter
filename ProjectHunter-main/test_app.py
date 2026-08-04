@@ -1,5 +1,6 @@
 import json
 import unittest
+from datetime import date
 from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import patch
@@ -252,6 +253,34 @@ class ProjectHunterAppTests(unittest.TestCase):
         self.assertIn(b"Apply Filters", response.data)
         self.assertNotIn(b"Tasks page coming soon", response.data)
         self.assertIn(b'nav-link active" href="/tasks">Follow Ups</a>', response.data)
+
+    def test_follow_ups_support_unassigned_states_and_portable_dates(self):
+        task = {
+            "id": "1-research-incomplete",
+            "kind": "research-incomplete",
+            "reason": "Research incomplete",
+            "due_date": date(2026, 8, 4),
+            "priority_score": 80,
+            "project": {
+                "id": 1,
+                "name": "No State Project",
+                "state": None,
+                "recommended_next_action": "Verify contractor assignment",
+                "electrical_contractor": "",
+                "general_contractor": "",
+                "developer": "Example Developer",
+            },
+        }
+        with (
+            patch("app.build_follow_ups", return_value=[task]),
+            patch.object(app_module, "dismissed_follow_ups", set()),
+        ):
+            response = self.client.get("/tasks?state=Unassigned")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b"No State Project", response.data)
+        self.assertIn(b"Unassigned", response.data)
+        self.assertIn(b"Due Aug 4", response.data)
 
     def test_follow_up_can_be_dismissed_and_restored_from_workspace(self):
         task_state = set()
