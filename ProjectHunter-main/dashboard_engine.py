@@ -101,7 +101,7 @@ def build_follow_ups(projects, contacts, dismissed=None, today=None):
         for kind, reason, due in reasons:
             task_id = f"{project['id']}-{kind}"
             if task_id not in dismissed:
-                tasks.append({"id": task_id, "project": project, "reason": reason, "due_date": due, "priority_score": priority_score(project, contacts)})
+                tasks.append({"id": task_id, "kind": kind, "project": project, "reason": reason, "due_date": due, "priority_score": priority_score(project, contacts)})
     return sorted(tasks, key=lambda item: (-item["priority_score"], item["project"]["name"]))
 
 
