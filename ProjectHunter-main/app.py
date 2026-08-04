@@ -702,7 +702,7 @@ def tasks_page():
     filtered_tasks = [
         task for task in active_tasks
         if (not selected_type or task["kind"] == selected_type)
-        and (not selected_state or task["project"].get("state") == selected_state)
+        and (not selected_state or (task["project"].get("state") or "Unassigned") == selected_state)
     ]
     reason_options = sorted({(task["kind"], task["reason"]) for task in all_tasks}, key=lambda item: item[1])
     state_options = sorted({task["project"].get("state") or "Unassigned" for task in all_tasks})
