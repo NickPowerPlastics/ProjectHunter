@@ -629,6 +629,7 @@
       "developer": "",
       "general_contractor": "",
       "electrical_contractor": "",
+      "quoted_company": "Hunt Electric",
       "mechanical_contractor": "",
       "current_stage": "Quote Follow-up",
       "confidence": 35,
@@ -842,6 +843,83 @@
       "email_status": "HubSpot",
       "location": "United States",
       "priority": 82
+    },
+    {
+      "name": "Dave Delaittre",
+      "company": "Hunt Electric",
+      "title": "Role not verified",
+      "email": "ddelaittre@huntelec.com",
+      "email_status": "User supplied",
+      "outreach_status": "No response - date unknown",
+      "location": "Unknown",
+      "priority": 40,
+      "notes": "Previously contacted by Nick; no response. Current role and email deliverability not independently verified."
+    },
+    {
+      "name": "Bob Adam",
+      "company": "Hunt Electric",
+      "title": "Role not verified",
+      "email": "badam@huntelec.com",
+      "email_status": "User supplied",
+      "outreach_status": "No response - date unknown",
+      "location": "Unknown",
+      "priority": 40,
+      "notes": "Previously contacted by Nick; no response. Current role and email deliverability not independently verified."
+    },
+    {
+      "name": "Justin Huether",
+      "company": "Hunt Electric",
+      "title": "Role not verified",
+      "email": "jhuether@huntelec.com",
+      "email_status": "User supplied",
+      "outreach_status": "No response - date unknown",
+      "location": "Unknown",
+      "priority": 40,
+      "notes": "Previously contacted by Nick; no response. Current role and email deliverability not independently verified."
+    },
+    {
+      "name": "Ted Bouthilet",
+      "company": "Hunt Electric",
+      "title": "Role not verified",
+      "email": "tbouthilet@huntelec.com",
+      "email_status": "User supplied",
+      "outreach_status": "No response - date unknown",
+      "location": "Unknown",
+      "priority": 40,
+      "notes": "Previously contacted by Nick; no response. Current role and email deliverability not independently verified."
+    },
+    {
+      "name": "Martin McAdams",
+      "company": "Hunt Electric",
+      "title": "Role not verified",
+      "email": "mmcadams@huntelec.com",
+      "email_status": "User supplied",
+      "outreach_status": "No response - date unknown",
+      "location": "Unknown",
+      "priority": 40,
+      "notes": "Previously contacted by Nick; no response. Current role and email deliverability not independently verified."
+    },
+    {
+      "name": "Michael Moryn",
+      "company": "Hunt Electric",
+      "title": "Role not verified",
+      "email": "mmoryn@huntelec.com",
+      "email_status": "User supplied",
+      "outreach_status": "No response - date unknown",
+      "location": "Unknown",
+      "priority": 40,
+      "notes": "Previously contacted by Nick; no response. Current role and email deliverability not independently verified."
+    },
+    {
+      "name": "Mike Elia",
+      "company": "Hunt Electric",
+      "title": "Role not verified",
+      "email": "melia@huntelec.com",
+      "email_status": "User supplied",
+      "outreach_status": "No response - date unknown",
+      "location": "Unknown",
+      "priority": 40,
+      "notes": "Previously contacted by Nick; no response. Current role and email deliverability not independently verified."
     }
   ]
 }
