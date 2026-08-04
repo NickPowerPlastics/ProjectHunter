@@ -27,7 +27,7 @@ from research.intelligence import (
     build_project_research,
     get_contacts,
 )
-from dashboard_engine import build_activity, build_follow_ups, build_priorities, calculate_revenue
+from dashboard_engine import build_activity, build_daily_actions, build_follow_ups, calculate_revenue
 
 try:
     from dotenv import load_dotenv
@@ -286,9 +286,11 @@ def home():
     projects = intelligence["projects"]
     companies = intelligence_store.companies()
     company_ids = {company["name"].casefold(): company["id"] for company in companies}
-    priorities = build_priorities(projects, intelligence["contacts"])
-    for project in priorities:
-        project["company_id"] = company_ids.get(project["company"].casefold())
+    priorities = build_daily_actions(projects, intelligence["contacts"], dismissed_follow_ups, limit=20)
+    for action in priorities:
+        action["company_id"] = company_ids.get(action["company"].casefold())
+        if action["contact"]:
+            action["email_url"] = build_project_email_url(action["contact"], action["project"])
     try:
         git_commit = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=BASE_DIR, capture_output=True, text=True, check=True).stdout.strip()
     except (OSError, subprocess.CalledProcessError):
@@ -334,7 +336,24 @@ def restore_follow_up(task_id):
 
 @app.route("/projects")
 def projects_page():
-    return render_template("projects.html", states=intelligence_store.states(), active_page="projects")
+    projects = intelligence_store.snapshot()["projects"]
+    selected_view = request.args.get("view", "all").strip()
+    if selected_view == "qualified":
+        projects = [
+            project for project in projects
+            if project.get("electrical_contractor") and int(project.get("confidence") or 0) >= 80
+        ]
+    grouped = {}
+    for project in projects:
+        grouped.setdefault(project.get("state") or "Unassigned", []).append(project)
+    states = [
+        {"name": state, "projects": sorted(items, key=lambda item: item["name"].casefold())}
+        for state, items in sorted(grouped.items())
+    ]
+    return render_template(
+        "projects.html", states=states, selected_view=selected_view,
+        project_count=len(projects), active_page="projects",
+    )
 
 
 @app.route("/diagnostics", methods=["GET", "POST"])
@@ -602,6 +621,33 @@ Thanks,"""
     return f"mailto:{quote(email, safe='@')}?{query}"
 
 
+def build_project_email_url(contact, project):
+    """Create a project-specific draft only for an address already verified in the feed."""
+    email = str(contact.get("email") or "").strip()
+    if not email or contact.get("email_status") == "Bounced":
+        return None
+    name = str(contact.get("name") or "").strip()
+    first_name = name.split()[0] if name else "there"
+    project_name = str(project.get("name") or "your project")
+    subject = f"Duct bank spacer support for {project_name}"
+    body = f"""Hi {first_name},
+
+I work with Power Plastics, a U.S. manufacturer of duct bank spacers and custom machined plastic components for mission-critical infrastructure.
+
+I am following {project_name} and wanted to ask whether you are the right person for underground electrical material sourcing or estimating. We can support conduit spacer packages, custom configurations, and schedule-sensitive releases.
+
+If someone else owns this scope, would you point me in the right direction?
+
+Thanks,
+Nick"""
+    query = urlencode({
+        "bcc": "20887200@bcc.na2.hubspot.com",
+        "subject": subject,
+        "body": body,
+    }, quote_via=quote)
+    return f"mailto:{quote(email, safe='@')}?{query}"
+
+
 @app.route("/contacts")
 def contacts_page():
     company = request.args.get("company", "").strip()
@@ -694,7 +740,10 @@ def intelligence_admin():
 @app.route("/tasks")
 def tasks_page():
     intelligence = intelligence_store.snapshot()
-    all_tasks = build_follow_ups(intelligence["projects"], intelligence["contacts"])
+    all_tasks = build_daily_actions(intelligence["projects"], intelligence["contacts"], limit=100)
+    for task in all_tasks:
+        if task["contact"]:
+            task["email_url"] = build_project_email_url(task["contact"], task["project"])
     active_tasks = [task for task in all_tasks if task["id"] not in dismissed_follow_ups]
     dismissed_tasks = [task for task in all_tasks if task["id"] in dismissed_follow_ups]
     selected_type = request.args.get("type", "").strip()
@@ -716,8 +765,9 @@ def tasks_page():
         state_options=state_options,
         counts={
             "due": len(active_tasks),
-            "research": sum(task["kind"] == "research-incomplete" for task in active_tasks),
-            "contacts": sum(task["kind"] == "contractor-no-contacts" for task in active_tasks),
+            "email": sum(task["kind"] == "email" for task in active_tasks),
+            "research": sum(task["kind"].startswith("research-") for task in active_tasks),
+            "contacts": sum(task["kind"] == "research-contact" for task in active_tasks),
             "high_priority": sum(task["priority_score"] >= 70 for task in active_tasks),
         },
         active_page="tasks",
@@ -739,7 +789,8 @@ def toggle_favorite(project_id):
 
 @app.route("/project/<int:project_id>")
 def project_details(project_id):
-    projects = intelligence_store.snapshot()["projects"]
+    intelligence = intelligence_store.snapshot()
+    projects = intelligence["projects"]
     project = next((item for item in projects if item.get("id") == project_id), None)
 
     if project is None:
@@ -749,12 +800,24 @@ def project_details(project_id):
                       for company in intelligence_store.companies() for company_type in company["types"]}
     contractor_candidates = project.get("contractor_candidates") or []
     apollo_setup_message = project.get("apollo_setup_message")
+    company_names = {
+        str(project.get(field) or "").casefold()
+        for field in ("developer", "general_contractor", "electrical_contractor", "mechanical_contractor")
+        if project.get(field)
+    }
+    project_contacts = [
+        dict(contact) for contact in intelligence["contacts"]
+        if str(contact.get("company") or "").casefold() in company_names
+    ]
+    for contact in project_contacts:
+        contact["email_url"] = build_project_email_url(contact, project) if contact.get("ready_to_email") else None
     return render_template(
         "project.html",
         project=project,
         company_lookup=company_lookup,
         contractor_candidates=contractor_candidates,
         apollo_setup_message=apollo_setup_message,
+        project_contacts=project_contacts,
         active_page="dashboard",
     )
 
