@@ -32,9 +32,11 @@ class DashboardEngineTests(unittest.TestCase):
     def test_follow_ups_derive_from_feed_and_can_be_dismissed(self):
         tasks = build_follow_ups(self.projects, self.contacts, today=date(2026, 8, 4))
         reasons = {task["reason"] for task in tasks}
+        kinds = {task["kind"] for task in tasks}
         self.assertIn("No activity in 7 days", reasons)
         self.assertIn("Email opened but no reply", reasons)
         self.assertIn("Research incomplete", reasons)
+        self.assertIn("research-incomplete", kinds)
         dismissed = {tasks[0]["id"]}
         self.assertNotIn(tasks[0]["id"], {task["id"] for task in build_follow_ups(self.projects, self.contacts, dismissed, date(2026, 8, 4))})
 

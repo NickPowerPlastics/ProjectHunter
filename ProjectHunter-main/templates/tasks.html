@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="mission-hero compact-hero">
+  <div><p class="eyebrow">SALES WORK QUEUE</p><h2>Follow Ups</h2><p>Automatic next steps generated from project activity, research gaps, and contact coverage.</p></div>
+  <a class="button secondary-button" href="{{ url_for('home', _anchor='follow-ups') }}">Mission Control</a>
+</section>
+
+<section class="metric-grid" aria-label="Follow-up summary">
+  <article class="metric-card metric-alert"><span class="metric-label">Due now</span><strong>{{ counts.due }}</strong><span>Active follow-ups</span></article>
+  <article class="metric-card"><span class="metric-label">Research gaps</span><strong>{{ counts.research }}</strong><span>Projects needing intelligence</span></article>
+  <article class="metric-card"><span class="metric-label">Contact gaps</span><strong>{{ counts.contacts }}</strong><span>Contractors without contacts</span></article>
+  <article class="metric-card metric-good"><span class="metric-label">High priority</span><strong>{{ counts.high_priority }}</strong><span>Score of 70 or higher</span></article>
+</section>
+
+<section class="card task-filter-card">
+  <form method="get" class="task-filters">
+    <label>Reason<select name="type"><option value="">All reasons</option>{% for value, label in reason_options %}<option value="{{ value }}"{% if selected_type == value %} selected{% endif %}>{{ label }}</option>{% endfor %}</select></label>
+    <label>State<select name="state"><option value="">All states</option>{% for state in state_options %}<option value="{{ state }}"{% if selected_state == state %} selected{% endif %}>{{ state }}</option>{% endfor %}</select></label>
+    <button class="button" type="submit">Apply Filters</button>
+    {% if selected_type or selected_state %}<a class="small-action" href="{{ url_for('tasks_page') }}">Clear</a>{% endif %}
+  </form>
+</section>
+
+<section class="card task-workspace">
+  <div class="panel-heading"><div><p class="eyebrow">ACTIVE QUEUE</p><h3>Work these next</h3></div><span class="count-pill">{{ tasks|length }}</span></div>
+  <div class="task-list">
+    {% for task in tasks %}
+    <article class="task-row">
+      <div class="task-score"><strong>{{ task.priority_score }}</strong><span>priority</span></div>
+      <div class="task-copy">
+        <div class="task-meta"><span>{{ task.project.state }}</span><span>{{ task.reason }}</span><span>Due {{ task.due_date.strftime('%b %-d') }}</span></div>
+        <h4><a href="{{ url_for('project_details', project_id=task.project.id) }}">{{ task.project.name }}</a></h4>
+        <p>{{ task.project.recommended_next_action }}</p>
+        <small>{{ task.project.electrical_contractor or task.project.general_contractor or task.project.developer }}</small>
+      </div>
+      <div class="task-actions"><a class="small-action" href="{{ url_for('project_details', project_id=task.project.id) }}">Open Project</a><form method="post" action="{{ url_for('dismiss_follow_up', task_id=task.id) }}"><input type="hidden" name="source" value="tasks"><button class="text-button" type="submit">Dismiss</button></form></div>
+    </article>
+    {% else %}<p class="empty-state">No active follow-ups match these filters.</p>{% endfor %}
+  </div>
+</section>
+
+{% if dismissed_tasks %}<details class="card dismissed-tasks"><summary>Dismissed follow-ups ({{ dismissed_tasks|length }})</summary>{% for task in dismissed_tasks %}<div class="dismissed-row"><span><strong>{{ task.project.name }}</strong><small>{{ task.reason }}</small></span><form method="post" action="{{ url_for('restore_follow_up', task_id=task.id) }}"><button class="text-button" type="submit">Restore</button></form></div>{% endfor %}</details>{% endif %}
+{% endblock %}
