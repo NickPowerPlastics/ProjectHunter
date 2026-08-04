@@ -185,6 +185,7 @@ class ProjectHunterAppTests(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertIn(b"/projects", response.data)
+        self.assertIn(b"State Explorer", response.data)
         self.assertIn(b"/companies", response.data)
         self.assertIn(b"/contacts", response.data)
         self.assertIn(b"/tasks", response.data)
@@ -238,8 +239,8 @@ class ProjectHunterAppTests(unittest.TestCase):
         response = self.client.get("/projects")
 
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b"Projects", response.data)
-        self.assertIn(b'nav-link active', response.data)
+        self.assertIn(b"State Explorer", response.data)
+        self.assertIn(b'nav-link active" href="/projects">State Explorer</a>', response.data)
 
     def test_dashboard_renders_favorites_section_and_orders_favorites_first(self):
         projects = [
