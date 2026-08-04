@@ -34,7 +34,7 @@
     <div class="panel-heading"><div><p class="eyebrow">AUTOMATIC TASKS</p><h3>Follow-up Engine</h3></div><span class="count-pill">{{ follow_ups|length }}</span></div>
     {% for task in follow_ups %}<div class="follow-up-card">
       <a class="card-click-target" href="{{ url_for('project_details', project_id=task.project.id) }}" aria-label="Open {{ task.project.name }}"></a>
-      <div><strong>{{ task.project.name }}</strong><span>{{ task.reason }}</span><small>Due {{ task.due_date.strftime('%b %-d, %Y') }}</small></div>
+      <div><strong>{{ task.project.name }}</strong><span>{{ task.reason }}</span><small>Due {{ task.due_date.strftime('%b %d, %Y').replace(' 0', ' ') }}</small></div>
       <div class="inline-actions"><a class="small-action foreground-action" href="{{ url_for('project_details', project_id=task.project.id) }}">Open</a><form class="foreground-action" method="post" action="{{ url_for('dismiss_follow_up', task_id=task.id) }}"><button class="text-button" type="submit">Dismiss</button></form></div>
     </div>{% else %}<p class="empty-state">No follow-ups are due from the current intelligence feed.</p>{% endfor %}
   </article>
