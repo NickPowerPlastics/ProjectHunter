@@ -68,7 +68,8 @@ def priority_score(project, contacts, today=None):
     related_contacts = _contacts_for_project(project, contacts)
     contact_availability = 100 if any(item.get("ready_to_email") for item in related_contacts) else (50 if related_contacts else 0)
     follow_up_due = 100 if age >= 7 or any(item.get("outreach_status") in {"Email opened", "Email sent"} for item in related_contacts) else 25
-    score = round(confidence * .30 + stage * .20 + recency * .15 + contractor * .15 + follow_up_due * .10 + contact_availability * .10)
+    user_priority = 20 if project.get("user_priority") else 0
+    score = round(confidence * .30 + stage * .20 + recency * .15 + contractor * .15 + follow_up_due * .10 + contact_availability * .10 + user_priority)
     return min(100, max(0, score))
 
 
@@ -80,6 +81,69 @@ def build_priorities(projects, contacts):
         item["company"] = project_company(project)
         items.append(item)
     return sorted(items, key=lambda item: (-item["priority_score"], -int(item.get("confidence") or 0), item["name"]))
+
+
+def build_daily_actions(projects, contacts, dismissed=None, limit=20, today=None):
+    """Build a ranked, honest work queue without inventing people or addresses."""
+    dismissed, today = dismissed or set(), today or date.today()
+    actions = []
+    seen_emails = set()
+    ranked_projects = build_priorities(projects, contacts)
+
+    for project in ranked_projects:
+        related = _contacts_for_project(project, contacts)
+        ready = sorted(
+            (contact for contact in related if contact.get("ready_to_email") and contact.get("email")),
+            key=lambda contact: -int(contact.get("priority") or 0),
+        )
+        added_email = False
+        for contact in ready:
+            email = str(contact.get("email") or "").casefold()
+            if email in seen_emails:
+                continue
+            action_id = f"{project['id']}-email-{contact.get('id', email)}"
+            if action_id in dismissed:
+                continue
+            seen_emails.add(email)
+            added_email = True
+            actions.append({
+                "id": action_id,
+                "kind": "email",
+                "label": "Email",
+                "reason": f"Verified contact at {contact.get('company') or project['company']}",
+                "project": project,
+                "contact": contact,
+                "company": contact.get("company") or project["company"],
+                "due_date": today,
+                "priority_score": min(100, project["priority_score"] + 5),
+            })
+            if sum(item["project"]["id"] == project["id"] and item["kind"] == "email" for item in actions) >= 2:
+                break
+
+        if not added_email:
+            has_contractor = bool(str(project.get("electrical_contractor") or "").strip())
+            kind = "research-contact" if has_contractor else "research-contractor"
+            action_id = f"{project['id']}-{kind}"
+            if action_id not in dismissed:
+                actions.append({
+                    "id": action_id,
+                    "kind": kind,
+                    "label": "Research contact" if has_contractor else "Research contractor",
+                    "reason": (
+                        f"No verified contact for {project['company']}"
+                        if has_contractor else "Electrical contractor is not verified"
+                    ),
+                    "project": project,
+                    "contact": None,
+                    "company": project["company"],
+                    "due_date": today,
+                    "priority_score": project["priority_score"],
+                })
+
+    return sorted(
+        actions,
+        key=lambda item: (-item["priority_score"], item["kind"] != "email", item["project"]["name"]),
+    )[:limit]
 
 
 def build_follow_ups(projects, contacts, dismissed=None, today=None):
