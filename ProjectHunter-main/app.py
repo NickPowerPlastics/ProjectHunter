@@ -321,7 +321,15 @@ def home():
 @app.post("/follow-ups/<task_id>/dismiss")
 def dismiss_follow_up(task_id):
     dismissed_follow_ups.add(task_id)
+    if request.form.get("source") == "tasks":
+        return redirect(url_for("tasks_page"))
     return redirect(url_for("home", _anchor="follow-ups"))
+
+
+@app.post("/follow-ups/<task_id>/restore")
+def restore_follow_up(task_id):
+    dismissed_follow_ups.discard(task_id)
+    return redirect(url_for("tasks_page"))
 
 
 @app.route("/projects")
@@ -685,7 +693,35 @@ def intelligence_admin():
 
 @app.route("/tasks")
 def tasks_page():
-    return render_template("page.html", title="Tasks", content="Tasks page coming soon.", active_page="tasks")
+    intelligence = intelligence_store.snapshot()
+    all_tasks = build_follow_ups(intelligence["projects"], intelligence["contacts"])
+    active_tasks = [task for task in all_tasks if task["id"] not in dismissed_follow_ups]
+    dismissed_tasks = [task for task in all_tasks if task["id"] in dismissed_follow_ups]
+    selected_type = request.args.get("type", "").strip()
+    selected_state = request.args.get("state", "").strip()
+    filtered_tasks = [
+        task for task in active_tasks
+        if (not selected_type or task["kind"] == selected_type)
+        and (not selected_state or task["project"].get("state") == selected_state)
+    ]
+    reason_options = sorted({(task["kind"], task["reason"]) for task in all_tasks}, key=lambda item: item[1])
+    state_options = sorted({task["project"].get("state") or "Unassigned" for task in all_tasks})
+    return render_template(
+        "tasks.html",
+        tasks=filtered_tasks,
+        dismissed_tasks=dismissed_tasks,
+        selected_type=selected_type,
+        selected_state=selected_state,
+        reason_options=reason_options,
+        state_options=state_options,
+        counts={
+            "due": len(active_tasks),
+            "research": sum(task["kind"] == "research-incomplete" for task in active_tasks),
+            "contacts": sum(task["kind"] == "contractor-no-contacts" for task in active_tasks),
+            "high_priority": sum(task["priority_score"] >= 70 for task in active_tasks),
+        },
+        active_page="tasks",
+    )
 
 
 @app.route("/project/<int:project_id>/favorite", methods=["POST"])
