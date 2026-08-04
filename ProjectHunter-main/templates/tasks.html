@@ -7,9 +7,9 @@
 
 <section class="metric-grid" aria-label="Follow-up summary">
   <article class="metric-card metric-alert"><span class="metric-label">Due now</span><strong>{{ counts.due }}</strong><span>Active follow-ups</span></article>
+  <article class="metric-card metric-good"><span class="metric-label">Ready to email</span><strong>{{ counts.email }}</strong><span>Unique verified addresses</span></article>
   <article class="metric-card"><span class="metric-label">Research gaps</span><strong>{{ counts.research }}</strong><span>Projects needing intelligence</span></article>
   <article class="metric-card"><span class="metric-label">Contact gaps</span><strong>{{ counts.contacts }}</strong><span>Contractors without contacts</span></article>
-  <article class="metric-card metric-good"><span class="metric-label">High priority</span><strong>{{ counts.high_priority }}</strong><span>Score of 70 or higher</span></article>
 </section>
 
 <section class="card task-filter-card">
@@ -28,12 +28,12 @@
     <article class="task-row">
       <div class="task-score"><strong>{{ task.priority_score }}</strong><span>priority</span></div>
       <div class="task-copy">
-        <div class="task-meta"><span>{{ task.project.state }}</span><span>{{ task.reason }}</span><span>Due {{ task.due_date.strftime('%b %-d') }}</span></div>
-        <h4><a href="{{ url_for('project_details', project_id=task.project.id) }}">{{ task.project.name }}</a></h4>
-        <p>{{ task.project.recommended_next_action }}</p>
-        <small>{{ task.project.electrical_contractor or task.project.general_contractor or task.project.developer }}</small>
+        <div class="task-meta"><span>{{ task.label }}</span><span>{{ task.project.state }}</span><span>Due {{ task.due_date.strftime('%b %d').replace(' 0', ' ') }}</span></div>
+        <h4><a href="{{ url_for('project_details', project_id=task.project.id) }}">{{ task.contact.name if task.contact else task.project.name }}</a></h4>
+        <p>{{ task.project.name }} · {{ task.reason }}</p>
+        <small>{% if task.contact %}{{ task.contact.title }} · {{ task.contact.company }} · {{ task.contact.email }}{% else %}{{ task.company }}{% endif %}</small>
       </div>
-      <div class="task-actions"><a class="small-action" href="{{ url_for('project_details', project_id=task.project.id) }}">Open Project</a><form method="post" action="{{ url_for('dismiss_follow_up', task_id=task.id) }}"><input type="hidden" name="source" value="tasks"><button class="text-button" type="submit">Dismiss</button></form></div>
+      <div class="task-actions">{% if task.email_url %}<a class="small-action action-email" href="{{ task.email_url }}">Email</a>{% endif %}<a class="small-action" href="{{ url_for('project_details', project_id=task.project.id) }}">Open Project</a><form method="post" action="{{ url_for('dismiss_follow_up', task_id=task.id) }}"><input type="hidden" name="source" value="tasks"><button class="text-button" type="submit">Dismiss</button></form></div>
     </article>
     {% else %}<p class="empty-state">No active follow-ups match these filters.</p>{% endfor %}
   </div>
