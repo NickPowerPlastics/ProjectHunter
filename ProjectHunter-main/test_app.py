@@ -242,6 +242,30 @@ class ProjectHunterAppTests(unittest.TestCase):
         self.assertIn(b"State Explorer", response.data)
         self.assertIn(b'nav-link active" href="/projects">State Explorer</a>', response.data)
 
+    def test_follow_ups_page_renders_real_work_queue_and_filters(self):
+        with patch.object(app_module, "dismissed_follow_ups", set()):
+            response = self.client.get("/tasks?type=research-incomplete&state=Arizona")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b"SALES WORK QUEUE", response.data)
+        self.assertIn(b"Research gaps", response.data)
+        self.assertIn(b"Apply Filters", response.data)
+        self.assertNotIn(b"Tasks page coming soon", response.data)
+        self.assertIn(b'nav-link active" href="/tasks">Follow Ups</a>', response.data)
+
+    def test_follow_up_can_be_dismissed_and_restored_from_workspace(self):
+        task_state = set()
+        with patch.object(app_module, "dismissed_follow_ups", task_state):
+            response = self.client.post("/follow-ups/1-research-incomplete/dismiss", data={"source": "tasks"})
+            self.assertEqual(response.status_code, 302)
+            self.assertEqual(response.headers["Location"], "/tasks")
+            self.assertIn("1-research-incomplete", task_state)
+
+            response = self.client.post("/follow-ups/1-research-incomplete/restore")
+            self.assertEqual(response.status_code, 302)
+            self.assertEqual(response.headers["Location"], "/tasks")
+            self.assertNotIn("1-research-incomplete", task_state)
+
     def test_dashboard_renders_favorites_section_and_orders_favorites_first(self):
         projects = [
             {
