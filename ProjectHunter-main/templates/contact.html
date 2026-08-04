@@ -1,0 +1,4 @@
+{% extends "base.html" %}{% block content %}
+<section class="mission-hero compact-hero"><div><p class="eyebrow">CONTACT WORKSPACE</p><h2>{{ contact.name }}</h2><p>{{ contact.title }} · {{ contact.company }}</p></div>{% if contact.email_url %}<a class="button" href="{{ contact.email_url }}">Email contact</a>{% endif %}</section>
+<section class="card contact-workspace"><h3>Contact intelligence</h3><dl><dt>Email</dt><dd>{{ contact.email or 'Unavailable' }}</dd><dt>Email status</dt><dd>{{ contact.email_status }}</dd><dt>Outreach status</dt><dd>{{ contact.outreach_status }}</dd><dt>Last contacted</dt><dd>{{ contact.last_contacted or 'Never' }}</dd><dt>Location</dt><dd>{{ contact.location or 'Unavailable' }}</dd><dt>Notes</dt><dd>{{ contact.notes or 'No notes recorded.' }}</dd></dl><a class="small-action" href="{{ url_for('contacts_page', company=contact.company) }}">View company contacts →</a></section>
+{% endblock %}

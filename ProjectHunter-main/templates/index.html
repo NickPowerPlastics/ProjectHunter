@@ -1,33 +1,47 @@
 {% extends "base.html" %}
 {% block content %}
 <section class="mission-hero">
-  <div><p class="eyebrow">MULTI-STATE SALES INTELLIGENCE</p><h2>Mission Control</h2><p>One live view of project, company, contractor, and outreach intelligence.</p><p class="data-provenance">Source: <strong>{{ source }}</strong> · Synced <time>{{ last_updated.strftime('%Y-%m-%d %H:%M:%S UTC') }}</time></p></div>
+  <div><p class="eyebrow">POWER PLASTICS DAILY COMMAND CENTER</p><h2>Mission Control</h2><p>A ranked, evidence-backed plan for today's sales work.</p><p class="data-provenance">Source: <strong>{{ source }}</strong> · Synced <time>{{ last_updated.strftime('%Y-%m-%d %H:%M:%S UTC') }}</time></p></div>
   <form method="post" action="{{ url_for('sync_intelligence') }}"><input type="hidden" name="next" value="{{ url_for('home') }}"><button class="button" type="submit">Sync Intelligence</button></form>
 </section>
-<section class="metric-grid intelligence-metrics" aria-label="Mission Control metrics">
-{% for label, value in [('Projects',metrics.projects),('Companies',metrics.companies),('Contacts',metrics.contacts),('States',metrics.states),('Confirmed Contractors',metrics.confirmed_contractors),('Needs Research',metrics.needs_research),('Emails Sent',metrics.emails_sent),('Opportunities',metrics.opportunities),('Estimated Pipeline','$' ~ '{:,.0f}'.format(metrics.estimated_pipeline))] %}
-<article class="metric-card"><span class="metric-label">{{ label }}</span><strong>{{ value }}</strong></article>{% endfor %}
+
+<section class="revenue-grid" aria-label="Revenue Engine">
+  <article class="card revenue-card"><span>Potential Revenue</span><strong>${{ '{:,.0f}'.format(revenue.potential) }}</strong><small>{{ revenue.potential_formula }}</small></article>
+  <article class="card revenue-card"><span>Weighted Revenue</span><strong>${{ '{:,.0f}'.format(revenue.weighted) }}</strong><small>{{ revenue.weighted_formula }}</small></article>
+  <article class="card revenue-card"><span>Confidence</span><strong>{{ revenue.confidence }}%</strong><small>{{ revenue.confidence_formula }}</small></article>
 </section>
-<section class="dashboard-panels">
-{% for title, items, detail in [('Recent discoveries',recent_discoveries,'New intelligence entering the pipeline'),('Highest confidence opportunities',high_confidence,'Evidence-backed project teams'),('Projects needing research',needs_research,'Missing contractor intelligence'),('Recently updated projects',recently_updated,'Latest feed activity')] %}
-<article class="card insight-panel">
-  <div class="panel-heading"><div><h3>{{ title }}</h3><p class="section-subtitle">{{ detail }}</p></div><span class="count-pill">{{ items|length }}</span></div>
-  {% for project in items %}
-  <div class="actionable-insight-row">
-    <a class="insight-main" href="{{ url_for('project_details', project_id=project.id) }}">
-      <span><strong>{{ project.name }}</strong><small>{{ project.state }} · {{ project.current_stage }}</small></span>
-      <b>{{ project.confidence }}%</b>
-    </a>
-    <div class="insight-actions">
-      <span class="next-step">{{ project.next_action or 'Review project intelligence' }}</span>
-      <a class="small-action" href="{{ url_for('project_details', project_id=project.id) }}">Open project →</a>
-    </div>
-  </div>
-  {% else %}<p>No matching projects.</p>{% endfor %}
-</article>
-{% endfor %}
+<details class="card calculation-detail"><summary>Show revenue calculation by project</summary>{% for row in revenue.rows %}<a href="{{ url_for('project_details', project_id=row.project.id) }}"><span>{{ row.project.name }}</span><span>${{ '{:,.0f}'.format(row.potential) }} × {{ row.confidence }}% = <strong>${{ '{:,.0f}'.format(row.weighted) }}</strong></span></a>{% endfor %}</details>
+
+<section class="command-grid">
+  <article class="card command-panel priorities-panel">
+    <div class="panel-heading"><div><p class="eyebrow">RANKED WORK QUEUE</p><h3>Today's Priorities</h3></div><span class="count-pill">{{ priorities|length }}</span></div>
+    {% for project in priorities %}
+    <div class="priority-card">
+      <a class="card-click-target" href="{{ url_for('project_details', project_id=project.id) }}" aria-label="Open {{ project.name }} project workspace"></a>
+      <div class="priority-rank">{{ loop.index }}</div><div class="priority-content"><strong>{{ project.name }}</strong>
+      {% if project.company_id %}<a class="workspace-link" href="{{ url_for('company_details', company_id=project.company_id) }}">{{ project.company }}</a>{% else %}<span>{{ project.company }}</span>{% endif %}
+      <small>{{ project.recommended_next_action }}</small></div><div class="priority-score"><b>{{ project.priority_score }}</b><span>/ 100</span></div>
+      <a class="small-action foreground-action" href="{{ url_for('project_details', project_id=project.id) }}">Open Project →</a>
+    </div>{% endfor %}
+  </article>
+
+  <article class="card command-panel" id="follow-ups">
+    <div class="panel-heading"><div><p class="eyebrow">AUTOMATIC TASKS</p><h3>Follow-up Engine</h3></div><span class="count-pill">{{ follow_ups|length }}</span></div>
+    {% for task in follow_ups %}<div class="follow-up-card">
+      <a class="card-click-target" href="{{ url_for('project_details', project_id=task.project.id) }}" aria-label="Open {{ task.project.name }}"></a>
+      <div><strong>{{ task.project.name }}</strong><span>{{ task.reason }}</span><small>Due {{ task.due_date.strftime('%b %-d, %Y') }}</small></div>
+      <div class="inline-actions"><a class="small-action foreground-action" href="{{ url_for('project_details', project_id=task.project.id) }}">Open</a><form class="foreground-action" method="post" action="{{ url_for('dismiss_follow_up', task_id=task.id) }}"><button class="text-button" type="submit">Dismiss</button></form></div>
+    </div>{% else %}<p class="empty-state">No follow-ups are due from the current intelligence feed.</p>{% endfor %}
+  </article>
 </section>
-<section class="card project-browser"><div class="dashboard-header-row"><div><h3>State Explorer</h3><p class="section-subtitle">All projects grouped automatically from the intelligence feed.</p></div><a href="{{ url_for('projects_page') }}">Explore all projects →</a></div>
-{% for state in states %}<details class="state-group" {% if loop.first %}open{% endif %}><summary><strong>{{ state.name }}</strong><span>{{ state.projects|length }}</span></summary><div class="state-projects">{% for project in state.projects %}<a href="{{ url_for('project_details', project_id=project.id) }}"><strong>{{ project.name }}</strong><small>{{ project.developer }} · {{ project.current_stage }}</small><em>{{ project.next_action or 'Open project workspace' }}</em></a>{% endfor %}</div></details>{% endfor %}
+
+<section class="card activity-panel">
+  <div class="panel-heading"><div><p class="eyebrow">CHRONOLOGICAL FEED</p><h3>Activity Timeline</h3></div><span class="count-pill">{{ activities|length }}</span></div>
+  <div class="activity-feed">{% for event in activities %}
+    {% if event.project %}<a class="activity-row" href="{{ url_for('project_details', project_id=event.project.id) }}">{% else %}<a class="activity-row" href="{{ url_for('contact_details', contact_id=event.contact_id) }}">{% endif %}
+      <span class="activity-icon">{{ event.type[0] }}</span><span><strong>{{ event.type }}</strong><small>{{ event.text }}</small></span><time title="{{ event.timestamp or 'Date unavailable' }}">{{ event.relative_time }}</time>
+    </a>{% endfor %}</div>
 </section>
+
+<footer class="version-footer"><strong>Project Hunter</strong><span>Version {{ version }}</span><span>Git {{ git_commit }}</span><span>Intelligence feed {{ feed_date }}</span><span>Last sync {{ last_updated.strftime('%Y-%m-%d %H:%M:%S UTC') }}</span></footer>
 {% endblock %}

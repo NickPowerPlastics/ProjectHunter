@@ -1,4 +1,6 @@
 from pathlib import Path
+import os
+import subprocess
 from urllib.parse import quote, urlencode
 
 from flask import Flask, redirect, render_template, request, url_for
@@ -14,6 +16,7 @@ from research.intelligence import (
     build_project_research,
     get_contacts,
 )
+from dashboard_engine import build_activity, build_follow_ups, build_priorities, calculate_revenue
 
 try:
     from dotenv import load_dotenv
@@ -32,6 +35,8 @@ def load_environment() -> bool:
 
 
 app = Flask(__name__)
+app.secret_key = os.environ.get("SECRET_KEY", "project-hunter-local")
+dismissed_follow_ups = set()
 discovery_engine = DiscoveryEngine()
 research_engine = ResearchEngine()
 
@@ -216,6 +221,15 @@ def build_opportunity_sections(projects):
 def home():
     intelligence = intelligence_store.snapshot()
     projects = intelligence["projects"]
+    companies = intelligence_store.companies()
+    company_ids = {company["name"].casefold(): company["id"] for company in companies}
+    priorities = build_priorities(projects, intelligence["contacts"])
+    for project in priorities:
+        project["company_id"] = company_ids.get(project["company"].casefold())
+    try:
+        git_commit = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=BASE_DIR, capture_output=True, text=True, check=True).stdout.strip()
+    except (OSError, subprocess.CalledProcessError):
+        git_commit = "unavailable"
     return render_template(
         "index.html",
         projects=projects,
@@ -225,10 +239,23 @@ def home():
         needs_research=[item for item in projects if item.get("current_stage") == "Needs Research" or not item.get("electrical_contractor")][:5],
         recently_updated=sorted(projects, key=lambda item: item.get("last_activity", ""), reverse=True)[:5],
         metrics=intelligence_store.metrics(),
+        priorities=priorities,
+        activities=build_activity(projects, intelligence["contacts"]),
+        follow_ups=build_follow_ups(projects, intelligence["contacts"], dismissed_follow_ups),
+        revenue=calculate_revenue(projects),
+        version=os.environ.get("PROJECT_HUNTER_VERSION", "1.0.0"),
+        git_commit=git_commit,
+        feed_date=intelligence.get("updated_at") or "Unavailable",
         source=intelligence_store.source_label,
         last_updated=intelligence_store.last_updated,
         active_page="dashboard",
     )
+
+
+@app.post("/follow-ups/<task_id>/dismiss")
+def dismiss_follow_up(task_id):
+    dismissed_follow_ups.add(task_id)
+    return redirect(url_for("home", _anchor="follow-ups"))
 
 
 @app.route("/projects")
@@ -518,6 +545,16 @@ def contacts_page():
         last_updated=intelligence_store.last_updated,
         active_page="contacts",
     )
+
+
+@app.route("/contact/<int:contact_id>")
+def contact_details(contact_id):
+    contacts = intelligence_store.snapshot()["contacts"]
+    contact = next((item for item in contacts if item.get("id") == contact_id), None)
+    if contact is None:
+        return "Contact not found", 404
+    contact["email_url"] = build_contact_email_url(contact) if contact["ready_to_email"] else None
+    return render_template("contact.html", contact=contact, active_page="contacts")
 
 
 @app.post("/intelligence/sync")

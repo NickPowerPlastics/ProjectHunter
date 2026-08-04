@@ -68,6 +68,7 @@ class IntelligenceStore:
             if not identity or identity in contacts_by_email:
                 continue
             contact["email"] = email
+            contact["id"] = len(contacts_by_email) + 1
             if email in KNOWN_HELIX_BOUNCES:
                 contact["email_status"] = "Bounced"
             contact.setdefault("outreach_status", "Not contacted")
