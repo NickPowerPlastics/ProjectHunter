@@ -5,6 +5,13 @@
   <div class="hero-actions"><a class="button secondary-button" href="{{ url_for('intelligence_admin') }}">Import Feed</a><form method="post" action="{{ url_for('sync_intelligence') }}"><input type="hidden" name="next" value="{{ url_for('home') }}"><button class="button" type="submit">Reload Feed</button></form></div>
 </section>
 
+<nav class="metric-grid dashboard-links" aria-label="Mission Control navigation">
+  <a class="metric-card" href="{{ url_for('projects_page') }}"><span class="metric-label">Projects</span><strong>{{ metrics.projects }}</strong><span>Open the full pipeline</span></a>
+  <a class="metric-card metric-good" href="{{ url_for('projects_page', view='qualified') }}"><span class="metric-label">Qualified</span><strong>{{ metrics.confirmed_contractors }}</strong><span>Confirmed contractor, 80%+ confidence</span></a>
+  <a class="metric-card" href="{{ url_for('companies_page') }}"><span class="metric-label">Active companies</span><strong>{{ metrics.companies }}</strong><span>Developers and contractors</span></a>
+  <a class="metric-card metric-alert" href="{{ url_for('tasks_page') }}"><span class="metric-label">Today's actions</span><strong>{{ priorities|length }}</strong><span>Email and research queue</span></a>
+</nav>
+
 <section class="feed-freshness{% if freshness.is_stale %} feed-stale{% else %} feed-current{% endif %}" role="{% if freshness.is_stale %}alert{% else %}status{% endif %}">
   <div><strong>Intelligence feed: {{ freshness.feed_date }}</strong><span>{{ freshness.age_days }} day{% if freshness.age_days != 1 %}s{% endif %} old</span></div>
   {% if freshness.is_stale %}<p>Stale feed warning: this intelligence is more than {{ freshness.stale_after_days }} days old. Import a current feed before acting on project changes.</p>{% else %}<p>The intelligence feed is within the {{ freshness.stale_after_days }}-day freshness window.</p>{% endif %}
@@ -20,14 +27,14 @@
 <section class="command-grid">
   <article class="card command-panel priorities-panel">
     <div class="panel-heading"><div><p class="eyebrow">RANKED WORK QUEUE</p><h3>Today's Priorities</h3></div><span class="count-pill">{{ priorities|length }}</span></div>
-    {% for project in priorities %}
+    {% for action in priorities %}
     <div class="priority-card">
-      <a class="card-click-target" href="{{ url_for('project_details', project_id=project.id) }}" aria-label="Open {{ project.name }} project workspace"></a>
-      <div class="priority-rank">{{ loop.index }}</div><div class="priority-content"><strong>{{ project.name }}</strong>
-      {% if project.company_id %}<a class="workspace-link" href="{{ url_for('company_details', company_id=project.company_id) }}">{{ project.company }}</a>{% else %}<span>{{ project.company }}</span>{% endif %}
-      <small>{{ project.recommended_next_action }}</small></div><div class="priority-score"><b>{{ project.priority_score }}</b><span>/ 100</span></div>
-      <a class="small-action foreground-action" href="{{ url_for('project_details', project_id=project.id) }}">Open Project →</a>
-    </div>{% endfor %}
+      <a class="card-click-target" href="{{ url_for('project_details', project_id=action.project.id) }}" aria-label="Open {{ action.project.name }} project workspace"></a>
+      <div class="priority-rank">{{ loop.index }}</div><div class="priority-content"><strong>{{ action.contact.name if action.contact else action.project.name }}</strong>
+      {% if action.company_id %}<a class="workspace-link" href="{{ url_for('company_details', company_id=action.company_id) }}">{{ action.company }}</a>{% else %}<span>{{ action.company }}</span>{% endif %}
+      <small>{{ action.project.name }} · {{ action.reason }}</small></div><div class="priority-score"><b>{{ action.priority_score }}</b><span>/ 100</span></div>
+      {% if action.email_url %}<a class="small-action foreground-action action-email" href="{{ action.email_url }}">Email</a>{% else %}<a class="small-action foreground-action" href="{{ url_for('project_details', project_id=action.project.id) }}">{{ action.label }}</a>{% endif %}
+    </div>{% else %}<p class="empty-state">No actions could be generated from the current feed.</p>{% endfor %}
   </article>
 
   <article class="card command-panel" id="follow-ups">
