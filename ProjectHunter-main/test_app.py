@@ -243,6 +243,12 @@ class ProjectHunterAppTests(unittest.TestCase):
         self.assertIn(b"State Explorer", response.data)
         self.assertIn(b'nav-link active" href="/projects">State Explorer</a>', response.data)
 
+    def test_templates_use_portable_date_directives(self):
+        templates_dir = Path(__file__).with_name("templates")
+        for template_path in templates_dir.glob("*.html"):
+            with self.subTest(template=template_path.name):
+                self.assertNotIn("%-d", template_path.read_text(encoding="utf-8"))
+
     def test_follow_ups_page_renders_real_work_queue_and_filters(self):
         with patch.object(app_module, "dismissed_follow_ups", set()):
             response = self.client.get("/tasks?type=research-incomplete&state=Arizona")
