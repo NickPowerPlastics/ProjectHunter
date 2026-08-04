@@ -2,7 +2,12 @@
 {% block content %}
 <section class="mission-hero">
   <div><p class="eyebrow">POWER PLASTICS DAILY COMMAND CENTER</p><h2>Mission Control</h2><p>A ranked, evidence-backed plan for today's sales work.</p><p class="data-provenance">Source: <strong>{{ source }}</strong> · Synced <time>{{ last_updated.strftime('%Y-%m-%d %H:%M:%S UTC') }}</time></p></div>
-  <form method="post" action="{{ url_for('sync_intelligence') }}"><input type="hidden" name="next" value="{{ url_for('home') }}"><button class="button" type="submit">Sync Intelligence</button></form>
+  <div class="hero-actions"><a class="button secondary-button" href="{{ url_for('intelligence_admin') }}">Import Feed</a><form method="post" action="{{ url_for('sync_intelligence') }}"><input type="hidden" name="next" value="{{ url_for('home') }}"><button class="button" type="submit">Reload Feed</button></form></div>
+</section>
+
+<section class="feed-freshness{% if freshness.is_stale %} feed-stale{% else %} feed-current{% endif %}" role="{% if freshness.is_stale %}alert{% else %}status{% endif %}">
+  <div><strong>Intelligence feed: {{ freshness.feed_date }}</strong><span>{{ freshness.age_days }} day{% if freshness.age_days != 1 %}s{% endif %} old</span></div>
+  {% if freshness.is_stale %}<p>Stale feed warning: this intelligence is more than {{ freshness.stale_after_days }} days old. Import a current feed before acting on project changes.</p>{% else %}<p>The intelligence feed is within the {{ freshness.stale_after_days }}-day freshness window.</p>{% endif %}
 </section>
 
 <section class="revenue-grid" aria-label="Revenue Engine">

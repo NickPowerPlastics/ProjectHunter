@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="mission-hero compact-hero">
+  <div>
+    <p class="eyebrow">LOCAL ADMINISTRATION</p>
+    <h2>Intelligence Feed Import</h2>
+    <p>Validate and review a replacement feed before it reaches Mission Control.</p>
+  </div>
+  <a class="button secondary-button" href="{{ url_for('home') }}">Back to Mission Control</a>
+</section>
+
+{% if message %}<div class="admin-notice admin-success" role="status">{{ message }}</div>{% endif %}
+{% if error %}<div class="admin-notice admin-error" role="alert"><strong>Import blocked.</strong> {{ error }}</div>{% endif %}
+
+<section class="metric-grid" aria-label="Current feed summary">
+  <article class="metric-card"><span class="metric-label">Current feed date</span><strong class="metric-date">{{ current_preview.updated_at }}</strong></article>
+  <article class="metric-card"><span class="metric-label">Projects</span><strong>{{ current_preview.project_count }}</strong></article>
+  <article class="metric-card"><span class="metric-label">States</span><strong>{{ current_preview.state_count }}</strong></article>
+  <article class="metric-card"><span class="metric-label">Contacts</span><strong>{{ current_preview.contact_count }}</strong></article>
+</section>
+
+<section class="card admin-import-card">
+  <h3>Choose a replacement feed</h3>
+  <p>Upload a UTF-8 <code>.json</code> file or paste the full JSON document. Maximum request size: 5 MB.</p>
+  <form method="post" enctype="multipart/form-data">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <label for="json-file"><strong>JSON file</strong></label>
+    <input id="json-file" type="file" name="json_file" accept="application/json,.json">
+    <label for="json-text"><strong>Or paste JSON</strong></label>
+    <textarea id="json-text" name="json_text" rows="14" spellcheck="false" placeholder='{"updated_at":"2026-08-04","projects":{},"contacts":[]}'>{{ json_text }}</textarea>
+    <button class="button" type="submit" name="action" value="preview">Validate and Preview</button>
+  </form>
+</section>
+
+{% if preview %}
+<section class="card admin-preview" aria-label="Replacement feed preview">
+  <div class="panel-heading"><div><p class="eyebrow">VALIDATED REPLACEMENT</p><h3>Preview before import</h3></div><span class="status-pill status-verified">Schema valid</span></div>
+  <div class="preview-counts">
+    <span><strong>{{ preview.updated_at }}</strong> Feed date</span>
+    <span><strong>{{ preview.project_count }}</strong> Projects</span>
+    <span><strong>{{ preview.state_count }}</strong> States</span>
+    <span><strong>{{ preview.contact_count }}</strong> Contacts</span>
+  </div>
+  <div class="preview-columns">
+    <div><h4>States</h4><ul>{% for state, count in preview.states %}<li><span>{{ state }}</span><strong>{{ count }}</strong></li>{% else %}<li>None</li>{% endfor %}</ul></div>
+    <div><h4>Projects</h4><ul>{% for project in preview.projects %}<li>{{ project }}</li>{% else %}<li>None</li>{% endfor %}</ul></div>
+    <div><h4>Contacts</h4><ul>{% for contact in preview.contacts %}<li>{{ contact }}</li>{% else %}<li>None</li>{% endfor %}</ul></div>
+  </div>
+  <form method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <input type="hidden" name="preview_confirmed" value="1">
+    <textarea class="sr-only" name="json_text" aria-hidden="true">{{ json_text }}</textarea>
+    <p class="import-warning">Importing creates a timestamped backup of the current feed, atomically replaces <code>data/intelligence.json</code>, and reloads the application store.</p>
+    <button class="button danger-button" type="submit" name="action" value="import">Back Up Current Feed and Import</button>
+  </form>
+</section>
+{% endif %}
+{% endblock %}

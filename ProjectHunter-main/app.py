@@ -1,13 +1,24 @@
 from pathlib import Path
+from functools import wraps
+import hashlib
+import hmac
+import ipaddress
+import json
 import os
+import secrets
 import subprocess
 from urllib.parse import quote, urlencode
 
-from flask import Flask, redirect, render_template, request, url_for
+from flask import Flask, abort, redirect, render_template, request, session, url_for
 
 from discovery import DiscoveryEngine
 from integrations.apollo import ApolloCompanyService
-from intelligence_store import intelligence_store
+from intelligence_store import (
+    IntelligenceValidationError,
+    intelligence_store,
+    parse_intelligence_json,
+    preview_intelligence_payload,
+)
 from repositories.project_repository import calculate_score, load_projects, save_projects
 from research import ResearchEngine
 from research.intelligence import (
@@ -35,7 +46,8 @@ def load_environment() -> bool:
 
 
 app = Flask(__name__)
-app.secret_key = os.environ.get("SECRET_KEY", "project-hunter-local")
+app.secret_key = os.environ.get("SECRET_KEY") or secrets.token_hex(32)
+app.config["MAX_CONTENT_LENGTH"] = 5 * 1024 * 1024
 dismissed_follow_ups = set()
 discovery_engine = DiscoveryEngine()
 research_engine = ResearchEngine()
@@ -55,6 +67,57 @@ NAV_PAGES = {
     "contacts": "contacts_page",
     "tasks": "tasks_page",
 }
+
+
+def local_only(view):
+    """Restrict sensitive administration to the machine running Project Hunter."""
+    @wraps(view)
+    def wrapped(*args, **kwargs):
+        try:
+            is_loopback = ipaddress.ip_address(request.remote_addr or "").is_loopback
+        except ValueError:
+            is_loopback = False
+        if not is_loopback:
+            abort(403)
+        return view(*args, **kwargs)
+    return wrapped
+
+
+def admin_csrf_token():
+    token = session.get("admin_csrf_token")
+    if not token:
+        token = secrets.token_urlsafe(32)
+        session["admin_csrf_token"] = token
+    return token
+
+
+def verify_admin_csrf():
+    expected = session.get("admin_csrf_token", "")
+    supplied = request.form.get("csrf_token", "")
+    if not expected or not hmac.compare_digest(expected, supplied):
+        abort(400, description="Invalid or missing form token.")
+
+
+def read_submitted_feed():
+    upload = request.files.get("json_file")
+    if upload and upload.filename:
+        try:
+            return upload.read().decode("utf-8-sig")
+        except UnicodeDecodeError as error:
+            raise IntelligenceValidationError("The uploaded file must be UTF-8 JSON.") from error
+    pasted = request.form.get("json_text", "").strip()
+    if not pasted:
+        raise IntelligenceValidationError("Upload a JSON file or paste JSON to continue.")
+    return pasted
+
+
+@app.after_request
+def protect_admin_response(response):
+    if request.endpoint == "intelligence_admin":
+        response.headers["Cache-Control"] = "no-store"
+        response.headers["X-Frame-Options"] = "DENY"
+        response.headers["Content-Security-Policy"] = "default-src 'self'; frame-ancestors 'none'; form-action 'self'"
+    return response
 
 
 ACCOUNT_DATA = [
@@ -246,6 +309,9 @@ def home():
         version=os.environ.get("PROJECT_HUNTER_VERSION", "1.0.0"),
         git_commit=git_commit,
         feed_date=intelligence.get("updated_at") or "Unavailable",
+        freshness=intelligence_store.freshness(
+            stale_after_days=int(os.environ.get("INTELLIGENCE_STALE_AFTER_DAYS", "3"))
+        ),
         source=intelligence_store.source_label,
         last_updated=intelligence_store.last_updated,
         active_page="dashboard",
@@ -561,6 +627,60 @@ def contact_details(contact_id):
 def sync_intelligence():
     intelligence_store.reload()
     return redirect(request.form.get("next") or url_for("home"))
+
+
+@app.route("/admin/intelligence", methods=["GET", "POST"])
+@local_only
+def intelligence_admin():
+    message = session.pop("intelligence_admin_message", None)
+    error = None
+    preview = None
+    json_text = ""
+    status = 200
+
+    if request.method == "POST":
+        verify_admin_csrf()
+        try:
+            json_text = read_submitted_feed()
+            payload = parse_intelligence_json(json_text)
+            preview = preview_intelligence_payload(payload)
+            json_text = json.dumps(payload, indent=2, ensure_ascii=False)
+            payload_digest = hashlib.sha256(
+                json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+            ).hexdigest()
+            if request.form.get("action") == "import":
+                expected_digest = session.get("intelligence_preview_digest", "")
+                if (
+                    request.form.get("preview_confirmed") != "1"
+                    or not expected_digest
+                    or not hmac.compare_digest(expected_digest, payload_digest)
+                ):
+                    raise IntelligenceValidationError("Preview and confirm the feed before importing it.")
+                backup_path = intelligence_store.replace(payload)
+                session.pop("intelligence_preview_digest", None)
+                backup_label = f"data/backups/{backup_path.name}" if backup_path else "No prior feed existed"
+                session["intelligence_admin_message"] = (
+                    f"Imported {preview['project_count']} projects and {preview['contact_count']} contacts. "
+                    f"Backup: {backup_label}."
+                )
+                return redirect(url_for("intelligence_admin"))
+            session["intelligence_preview_digest"] = payload_digest
+        except IntelligenceValidationError as validation_error:
+            error = str(validation_error)
+            status = 400
+
+    with intelligence_store.path.open(encoding="utf-8") as handle:
+        current_preview = preview_intelligence_payload(json.load(handle))
+    return render_template(
+        "intelligence_admin.html",
+        current_preview=current_preview,
+        preview=preview,
+        json_text=json_text,
+        error=error,
+        message=message,
+        csrf_token=admin_csrf_token(),
+        active_page="admin",
+    ), status
 
 
 @app.route("/tasks")
