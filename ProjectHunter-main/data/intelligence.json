@@ -620,6 +620,37 @@
       "estimated_revenue": 185000,
       "last_activity": "2026-07-31",
       "contractors": []
+    },
+    "hunt electric indiana quote - project unverified": {
+      "name": "Hunt Electric Indiana quote - project unverified",
+      "display_name": "Hunt Electric Indiana quote - project unverified",
+      "state": "Indiana",
+      "market": "Mission-Critical Infrastructure",
+      "developer": "",
+      "general_contractor": "",
+      "electrical_contractor": "",
+      "mechanical_contractor": "",
+      "current_stage": "Quote Follow-up",
+      "confidence": 35,
+      "evidence": [],
+      "recommended_next_action": "Ask Border States for the Hunt estimator or buyer, project name, delivery city, quote number, award reason, and future releases.",
+      "timeline": [
+        {
+          "date": "2026-08-04",
+          "event": "Opportunity added from customer-supplied quote history; exact project remains unverified"
+        }
+      ],
+      "associated_contacts": [],
+      "estimated_revenue": 65000,
+      "last_activity": "2026-08-04",
+      "user_priority": true,
+      "known_facts": [
+        "Approximately $65,000 quoted through Border States for an Indiana project.",
+        "Border States reported that Power Plastics was less expensive than Hunt Electric's normal supplier.",
+        "Border States did not receive the order.",
+        "The project name and Hunt decision-maker have not yet been verified."
+      ],
+      "contractors": []
     }
   },
   "contacts": [
