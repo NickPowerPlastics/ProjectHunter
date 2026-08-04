@@ -1,7 +1,52 @@
-{% extends "base.html" %}{% block content %}<section class="mission-hero compact-hero"><div><p class="eyebrow">{{ project.state }} · PROJECT INTELLIGENCE</p><h2>{{ project.name }}</h2><p>{{ project.current_stage }} · {{ project.confidence }}% confidence</p></div></section>
+{% extends "base.html" %}
+{% block content %}
+<section class="mission-hero compact-hero">
+  <div><p class="eyebrow">{{ project.state }} · PROJECT INTELLIGENCE</p><h2>{{ project.name }}</h2><p>{{ project.current_stage }} · {{ project.confidence }}% confidence</p></div>
+  <a class="button secondary-button" href="{{ url_for('tasks_page') }}">Open Today's Actions</a>
+</section>
+
 <section class="project-workspace">
-<article class="card"><h3>Project Team</h3><dl class="record-fields"><dt>Developer</dt><dd>{{ project.developer or 'Not identified' }}</dd><dt>General Contractor</dt><dd>{{ project.general_contractor or 'Not identified' }}</dd><dt>Electrical Contractor</dt><dd>{{ project.electrical_contractor or 'Not identified' }}</dd><dt>Mechanical Contractor</dt><dd>{{ project.mechanical_contractor or 'Not identified' }}</dd><dt>Current Stage</dt><dd>{{ project.current_stage }}</dd><dt>Confidence</dt><dd>{{ project.confidence }}%</dd><dt>Estimated Revenue</dt><dd>${{ '{:,.0f}'.format(project.estimated_revenue) }}</dd></dl></article>
-<article class="card"><h3>Recommended Next Action</h3><p class="next-action">{{ project.recommended_next_action }}</p><h3>Associated Contacts</h3>{% for contact in project.associated_contacts %}<p>{{ contact }}</p>{% else %}<p>No contacts directly associated yet.</p>{% endfor %}</article>
-<article class="card"><h3>Evidence</h3>{% for evidence in project.evidence %}<a class="result-row" href="{{ evidence.url }}" target="_blank" rel="noopener"><strong>{{ evidence.label }}</strong><span>Open source ↗</span></a>{% else %}<p>No evidence attached; research is required.</p>{% endfor %}</article>
-<article class="card"><h3>Timeline</h3>{% for event in project.timeline %}<div class="timeline-row"><time>{{ event.date }}</time><strong>{{ event.event }}</strong></div>{% else %}<p>No timeline events recorded.</p>{% endfor %}</article></section>
-<p><a class="button" href="{{ url_for('projects_page') }}">Back to State Explorer</a></p>{% endblock %}
+  <article class="card">
+    <h3>Project Team</h3>
+    <dl class="record-fields">
+      <dt>Developer</dt><dd>{{ project.developer or 'Not identified' }}</dd>
+      <dt>General Contractor</dt><dd>{{ project.general_contractor or 'Not identified' }}</dd>
+      <dt>Electrical Contractor</dt><dd>{{ project.electrical_contractor or 'Not identified' }}</dd>
+      <dt>Mechanical Contractor</dt><dd>{{ project.mechanical_contractor or 'Not identified' }}</dd>
+      <dt>Current Stage</dt><dd>{{ project.current_stage }}</dd>
+      <dt>Confidence</dt><dd>{{ project.confidence }}%</dd>
+      <dt>Estimated Revenue</dt><dd>${{ '{:,.0f}'.format(project.estimated_revenue) }}</dd>
+    </dl>
+  </article>
+
+  <article class="card action-panel">
+    <p class="eyebrow">NEXT BEST ACTION</p>
+    <h3>{{ project.recommended_next_action }}</h3>
+    {% if project_contacts %}
+      <p>{{ project_contacts|length }} related contact{% if project_contacts|length != 1 %}s{% endif %} found in the verified feed.</p>
+    {% elif project.electrical_contractor %}
+      <p>No verified contact is available for {{ project.electrical_contractor }}. Research estimating, procurement, or project leadership before outreach.</p>
+    {% else %}
+      <p>The electrical contractor is not verified. Confirm the contractor before selecting contacts.</p>
+    {% endif %}
+  </article>
+
+  <article class="card project-contacts">
+    <div class="panel-heading"><div><p class="eyebrow">DECISION MAKERS</p><h3>Contacts</h3></div><span class="count-pill">{{ project_contacts|length }}</span></div>
+    {% for contact in project_contacts %}
+      <div class="contact-action-row">
+        <span><strong>{{ contact.name }}</strong><small>{{ contact.title }} · {{ contact.company }}</small><small>{{ contact.email_status }}{% if contact.email %} · {{ contact.email }}{% endif %}</small></span>
+        {% if contact.email_url %}<a class="small-action action-email" href="{{ contact.email_url }}">Email</a>{% else %}<span class="status-chip">Research replacement</span>{% endif %}
+      </div>
+    {% else %}
+      <p class="empty-state">No verified decision-maker is attached. This project has been added to the research queue.</p>
+    {% endfor %}
+  </article>
+
+  {% if project.known_facts %}<article class="card"><h3>Known Facts</h3><ul class="fact-list">{% for fact in project.known_facts %}<li>{{ fact }}</li>{% endfor %}</ul><p class="confidence-warning">Project assignment remains unverified.</p></article>{% endif %}
+
+  <article class="card"><h3>Evidence</h3>{% for evidence in project.evidence %}<a class="result-row" href="{{ evidence.url }}" target="_blank" rel="noopener"><strong>{{ evidence.label }}</strong><span>Open source</span></a>{% else %}<p>No evidence attached; research is required before relying on this assignment.</p>{% endfor %}</article>
+  <article class="card"><h3>Timeline</h3>{% for event in project.timeline %}<div class="timeline-row"><time>{{ event.date }}</time><strong>{{ event.event }}</strong></div>{% else %}<p>No timeline events recorded.</p>{% endfor %}</article>
+</section>
+<p><a class="button" href="{{ url_for('projects_page') }}">Back to Projects</a></p>
+{% endblock %}
