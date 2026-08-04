@@ -28,7 +28,7 @@
     <article class="task-row">
       <div class="task-score"><strong>{{ task.priority_score }}</strong><span>priority</span></div>
       <div class="task-copy">
-        <div class="task-meta"><span>{{ task.project.state }}</span><span>{{ task.reason }}</span><span>Due {{ task.due_date.strftime('%b %-d') }}</span></div>
+        <div class="task-meta"><span>{{ task.project.state or 'Unassigned' }}</span><span>{{ task.reason }}</span><span>Due {{ task.due_date.strftime('%b %d').replace(' 0', ' ') }}</span></div>
         <h4><a href="{{ url_for('project_details', project_id=task.project.id) }}">{{ task.project.name }}</a></h4>
         <p>{{ task.project.recommended_next_action }}</p>
         <small>{{ task.project.electrical_contractor or task.project.general_contractor or task.project.developer }}</small>
