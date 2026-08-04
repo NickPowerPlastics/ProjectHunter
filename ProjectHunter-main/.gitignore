@@ -216,3 +216,6 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Local intelligence feed backups created by the admin importer
+ProjectHunter-main/data/backups/

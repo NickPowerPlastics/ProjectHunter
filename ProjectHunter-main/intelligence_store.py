@@ -1,8 +1,11 @@
 """JSON-backed, state-agnostic intelligence model for Project Hunter."""
 
 import json
+import os
+import shutil
+import tempfile
 from copy import deepcopy
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from pathlib import Path
 
 
@@ -10,6 +13,119 @@ INTELLIGENCE_PATH = Path(__file__).resolve().parent / "data" / "intelligence.jso
 KNOWN_HELIX_BOUNCES = {
     "r.measles@helixelectric.com", "b.trunkey@helixelectric.com", "l.jones@helixelectric.com"
 }
+
+
+class IntelligenceValidationError(ValueError):
+    """Raised when an imported intelligence feed is not safe to load."""
+
+
+def _validate_number(value, label):
+    try:
+        number = float(value)
+    except (TypeError, ValueError) as error:
+        raise IntelligenceValidationError(f"{label} must be numeric.") from error
+    if number != number or number in (float("inf"), float("-inf")):
+        raise IntelligenceValidationError(f"{label} must be a finite number.")
+
+
+def _reject_json_constant(value):
+    raise IntelligenceValidationError(f"Invalid JSON number: {value}.")
+
+
+def _parse_feed_date(value):
+    if not isinstance(value, str) or not value.strip():
+        raise IntelligenceValidationError("updated_at is required and must be an ISO-8601 date or timestamp.")
+    candidate = value.strip()
+    try:
+        parsed = datetime.fromisoformat(candidate.replace("Z", "+00:00"))
+        return parsed.date()
+    except ValueError:
+        try:
+            return date.fromisoformat(candidate)
+        except ValueError as error:
+            raise IntelligenceValidationError(
+                "updated_at is required and must be an ISO-8601 date or timestamp."
+            ) from error
+
+
+def validate_intelligence_payload(payload):
+    """Validate the stable, intentionally small contract consumed by IntelligenceStore."""
+    if not isinstance(payload, dict):
+        raise IntelligenceValidationError("The feed must be a JSON object.")
+    _parse_feed_date(payload.get("updated_at"))
+
+    projects = payload.get("projects")
+    if not isinstance(projects, (dict, list)):
+        raise IntelligenceValidationError("projects must be an object or an array.")
+    project_items = list(projects.values()) if isinstance(projects, dict) else projects
+    for position, project in enumerate(project_items, 1):
+        if not isinstance(project, dict):
+            raise IntelligenceValidationError(f"Project {position} must be a JSON object.")
+        if not str(project.get("name") or project.get("display_name") or "").strip():
+            raise IntelligenceValidationError(f"Project {position} must include name or display_name.")
+        if "contractors" in project and not isinstance(project["contractors"], list):
+            raise IntelligenceValidationError(f"Project {position} contractors must be an array.")
+        if "timeline" in project and not isinstance(project["timeline"], list):
+            raise IntelligenceValidationError(f"Project {position} timeline must be an array.")
+        if "evidence" in project and not isinstance(project["evidence"], list):
+            raise IntelligenceValidationError(f"Project {position} evidence must be an array.")
+        for field in ("confidence", "estimated_revenue"):
+            if field in project:
+                _validate_number(project[field], f"Project {position} {field}")
+        for contractor_position, contractor in enumerate(project.get("contractors", []), 1):
+            if not isinstance(contractor, dict):
+                raise IntelligenceValidationError(
+                    f"Project {position} contractor {contractor_position} must be a JSON object."
+                )
+            if "confidence" in contractor:
+                _validate_number(
+                    contractor["confidence"], f"Project {position} contractor {contractor_position} confidence"
+                )
+            if "evidence" in contractor and not isinstance(contractor["evidence"], list):
+                raise IntelligenceValidationError(
+                    f"Project {position} contractor {contractor_position} evidence must be an array."
+                )
+
+    contacts = payload.get("contacts")
+    if not isinstance(contacts, list):
+        raise IntelligenceValidationError("contacts must be an array.")
+    for position, contact in enumerate(contacts, 1):
+        if not isinstance(contact, dict):
+            raise IntelligenceValidationError(f"Contact {position} must be a JSON object.")
+        if not str(contact.get("name") or contact.get("email") or "").strip():
+            raise IntelligenceValidationError(f"Contact {position} must include name or email.")
+        if "email" in contact and not isinstance(contact["email"], str):
+            raise IntelligenceValidationError(f"Contact {position} email must be a string.")
+        if "priority" in contact:
+            _validate_number(contact["priority"], f"Contact {position} priority")
+    return payload
+
+
+def parse_intelligence_json(text):
+    try:
+        payload = json.loads(text, parse_constant=_reject_json_constant)
+    except (json.JSONDecodeError, TypeError) as error:
+        detail = getattr(error, "msg", "Invalid JSON")
+        raise IntelligenceValidationError(f"Invalid JSON: {detail}.") from error
+    return validate_intelligence_payload(payload)
+
+
+def preview_intelligence_payload(payload):
+    validate_intelligence_payload(payload)
+    projects = list(payload["projects"].values()) if isinstance(payload["projects"], dict) else payload["projects"]
+    state_counts = {}
+    for project in projects:
+        state = str(project.get("state") or "Unassigned").strip() or "Unassigned"
+        state_counts[state] = state_counts.get(state, 0) + 1
+    return {
+        "updated_at": payload["updated_at"],
+        "project_count": len(projects),
+        "contact_count": len(payload["contacts"]),
+        "state_count": len(state_counts),
+        "states": sorted(state_counts.items()),
+        "projects": [str(project.get("name") or project.get("display_name")) for project in projects],
+        "contacts": [str(contact.get("name") or contact.get("email")) for contact in payload["contacts"]],
+    }
 
 
 def _money(value):
@@ -82,6 +198,48 @@ class IntelligenceStore:
         self.last_updated = datetime.now(timezone.utc)
         return self.snapshot()
 
+    def replace(self, payload):
+        """Back up and atomically replace the feed, then reload the in-memory store."""
+        validate_intelligence_payload(payload)
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        backup_path = None
+        if self.path.exists():
+            backup_dir = self.path.parent / "backups"
+            backup_dir.mkdir(parents=True, exist_ok=True)
+            stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
+            backup_path = backup_dir / f"intelligence-{stamp}.json"
+            shutil.copy2(self.path, backup_path)
+
+        temporary_path = None
+        try:
+            with tempfile.NamedTemporaryFile(
+                "w", encoding="utf-8", dir=self.path.parent, prefix=".intelligence-", suffix=".tmp", delete=False
+            ) as handle:
+                json.dump(payload, handle, indent=2, ensure_ascii=False)
+                handle.write("\n")
+                handle.flush()
+                os.fsync(handle.fileno())
+                temporary_path = Path(handle.name)
+            os.replace(temporary_path, self.path)
+            temporary_path = None
+            self.reload()
+        finally:
+            if temporary_path and temporary_path.exists():
+                temporary_path.unlink()
+        return backup_path
+
+    def freshness(self, now=None, stale_after_days=3):
+        snapshot = self.snapshot()
+        feed_date = _parse_feed_date(snapshot.get("updated_at"))
+        today = (now or datetime.now(timezone.utc)).date()
+        age_days = max((today - feed_date).days, 0)
+        return {
+            "feed_date": feed_date.isoformat(),
+            "age_days": age_days,
+            "stale_after_days": stale_after_days,
+            "is_stale": age_days > stale_after_days,
+        }
+
     def snapshot(self):
         if self._data is None:
             self.reload()
@@ -143,7 +301,10 @@ class IntelligenceStore:
 
     @property
     def source_label(self):
-        return str(self.path.relative_to(Path(__file__).resolve().parent))
+        try:
+            return str(self.path.relative_to(Path(__file__).resolve().parent))
+        except ValueError:
+            return self.path.name
 
 
 intelligence_store = IntelligenceStore()

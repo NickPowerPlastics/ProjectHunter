@@ -26,6 +26,17 @@ python app.py
 
 Then open `http://127.0.0.1:5000`.
 
+### Updating the intelligence feed
+
+Open `http://127.0.0.1:5000/admin/intelligence` on the computer running Project Hunter.
+The loopback-only admin page accepts an uploaded or pasted JSON feed, validates its
+schema, and shows project, state, and contact counts before import. A confirmed import
+creates a timestamped file under `data/backups/`, atomically replaces
+`data/intelligence.json`, and reloads the in-memory intelligence store.
+
+Mission Control warns when the feed is more than three days old. Set
+`INTELLIGENCE_STALE_AFTER_DAYS` to change that threshold.
+
 
 ## v4 Opportunity Finder
 - Connects saved Arizona project intelligence to real contractor contacts.
